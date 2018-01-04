@@ -16,7 +16,7 @@ myCurve::myCurve(int bufShowSize,QwtPlot* d_plotH,const QString &title,
     data.resize(bufShowSize);
     for(int i=0;i<data.size();i++)
     {
-        data[i ]=0;
+        data[i]=0;
     }
 }
 
@@ -56,13 +56,13 @@ void myCurve::pointDrawing(float x,float y)
     attach( d_plot); // отобразить кривую на графике
 }
 
-void myCurve::set_Drawing(std::vector<float>& x,std::vector<float>& y,int ii)
+void myCurve::set_Drawing(std::vector<fcomplex>& y,int ii)
 {
     // Добавить точки на ранее созданную кривую
     QPolygonF points;
 
-    for(int i=abs(ii);i<(x.size()-abs(ii));i++)
-        points<<QPointF(x[i],y[i+ii]);
+    for(int i=2;i<(y.size())/2;i++)
+        points<<QPointF(fmax*i/NFT,(fabs(y[i+ii])+0.0001));
 
     setSamples( points ); // ассоциировать набор точек с кривой
     attach( d_plot); // отобразить кривую на графике

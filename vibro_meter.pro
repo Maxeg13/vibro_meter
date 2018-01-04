@@ -30,7 +30,8 @@ HEADERS  += \
     stdafx.h \
     targetver.h \
     serialqobj.h \
-    mainwindow.h
+    mainwindow.h \
+    ftt.h
 
 DISTFILES += \
 

@@ -24,12 +24,10 @@ public:
 //    WillisonAmp WA[2];
 
     int readVar;
-//    int gottenVar[2];
-//    std::vector <std::vector<float>>& dataEMG;
-//    std::vector <std::vector <std::vector<float>>>& featureEMG;
-//    std::vector<float> featureOut;
+    vector<fcomplex>& ft;
+
     int ptr;
-    serial_obj(QString, myCurve *);
+    serial_obj(QString, myCurve *, vector<fcomplex>&);
     void init(QString);
     ~serial_obj();
     void close();

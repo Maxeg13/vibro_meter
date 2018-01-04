@@ -20,7 +20,11 @@
 #include <qwt_plot_panner.h>
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
-
+#include <complex>
+#include <stdio.h>
+#define NFT 600
+#define fmax 2150
+typedef  std::complex<float> fcomplex;
 
 
 #endif // HEADERS_H

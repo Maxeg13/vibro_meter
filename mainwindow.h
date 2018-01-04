@@ -11,6 +11,7 @@ class MainWindow : public QMainWindow
 
 public:
     void drawingInit(QwtPlot* d_plot, QString title);
+    void keyPressEvent(QKeyEvent*);
     void mousePressEvent(QMouseEvent *);
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

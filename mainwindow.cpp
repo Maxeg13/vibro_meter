@@ -3,25 +3,24 @@
 #include <QPainter>
 #include <QTimer>
 #include <QThread>
-#include<QDebug>
+#include <QDebug>
 #include "serial.h"
 #include "serialqobj.h"
 #include <QThread>
-//#include "work.h"
-
-
 #include <QMouseEvent>
-//#include "vars.h"
+
+vector<fcomplex> ft;
+vector<float> dataFFT;
+
+bool draw_on=1;
 int bufShowSize=3000;
-int nodes_N=340;
-int lines_N=5;
-float f;
 Serial hSerial;
 QLineEdit* LE;
 QThread* thread;
 QTimer *timer;
-QwtPlot* vibro_plot;
-myCurve* vibroCurve;
+QwtPlot *vibro_plot, *ftt_plot;
+
+myCurve* vibroCurve, *fttCurve;
 //work* WK;
 
 
@@ -29,20 +28,15 @@ myCurve* vibroCurve;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-
+    ft.resize(NFT);
 
     LE=new QLineEdit;
     QString qstr=QString("COM4");
     LE->setText(qstr);
-//    string str1=qstr.toUtf8().constData();
-//    wstring str(str1.begin(),str1.end());
-//    hSerial.InitCOM(str.c_str());
-
-
 
     int frame_width=4;
     QGridLayout* GL=new QGridLayout();
-    GL->addWidget(LE,0/frame_width,0%frame_width);
+//    GL->addWidget(LE,0/frame_width,0%frame_width);
 
     QWidget *centralWidget1=new QWidget();
     centralWidget1->setLayout(GL);
@@ -56,17 +50,37 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
+
+    ftt_plot=new QwtPlot;
+    drawingInit(ftt_plot,QString("ftt value"));
+    fttCurve=new myCurve(bufShowSize,ftt_plot,"fft", Qt::black, Qt::black);
+    ftt_plot->show();
+    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax/2);
+
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
     timer->start(40);
     this->update();
 
-    SO=new serial_obj(qstr, vibroCurve);
+    SO=new serial_obj(qstr, vibroCurve, ft);
     QThread* thread = new QThread( );
     SO->moveToThread(thread);
     connect(thread,SIGNAL(started()),SO,SLOT(doWork()));
     thread->start();
 
+}
+
+void MainWindow::keyPressEvent(QKeyEvent* e)
+{
+    if(e->text()==" ")
+    {
+        for (int i=0;i<NFT;i++)
+            ft[i]=0;
+    }
+    if(e->text()=="d")
+    {
+        draw_on=!draw_on;
+    }
 }
 
 void MainWindow::drawing()
@@ -100,7 +114,12 @@ void MainWindow::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     painter->scale(1.5,1.5);
 
+    if(draw_on)
     vibroCurve->signalDrawing();
+
+
+    fttCurve->set_Drawing(ft,0);
+
 //    for(int j=0;j<lines_N;j++)
 //        painter->drawLine(ML[j].x[0],ML[j].y[0],ML[j].x[1],ML[j].y[1]);
 
@@ -177,6 +196,6 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
     //    grid->attach( d_plot ); // добавить сетку к полю графика
 
 
-    d_plot->setMinimumSize(250,180);
+    d_plot->setMinimumSize(550,220);
 
 }

@@ -1,6 +1,6 @@
 #include "serialqobj.h"
-
-serial_obj::serial_obj(QString qstr, myCurve* _MC)
+#include "ftt.h"
+serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft)
 {
     MC=_MC;
     std::string str1=qstr.toUtf8().constData();
@@ -29,15 +29,18 @@ serial_obj::~serial_obj()
 {};
 void serial_obj::doWork()
 {
-
+    static float time;
     while(1)
     {
-
         bool readVarON;
         readVar=(int8_t)hSerial.ReadCOM(readVarON);
         if(readVarON)
         {
+            time+=.00046;
             MC->dataRefresh((int8_t)readVar);
+//            FTC->dataRefresh();
+            ftt( (int8_t)readVar,ft,time);
+//qDebug()<<fabs(ft[4]);
         }
 //            qDebug()<<(int8_t)readVar;
     }

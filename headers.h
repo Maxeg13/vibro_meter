@@ -22,8 +22,9 @@
 #include <qwt_picker_machine.h>
 #include <complex>
 #include <stdio.h>
-#define NFT 600
-#define fmax 2150
+#define NFT 700
+#define fmax 1000
+#define dt 1./2220
 typedef  std::complex<float> fcomplex;
 
 

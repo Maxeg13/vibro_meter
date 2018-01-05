@@ -8,13 +8,14 @@
 #include "serialqobj.h"
 #include <QThread>
 #include <QMouseEvent>
-
+#include "QSlider"
 vector<fcomplex> ft;
 vector<float> dataFFT;
 
 bool draw_on=1;
 int bufShowSize=3000;
 Serial hSerial;
+QSlider *ySlider;
 QLineEdit* LE;
 QThread* thread;
 QTimer *timer;
@@ -30,13 +31,20 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ft.resize(NFT);
 
+    ySlider=new QSlider();
+    ySlider->setOrientation(Qt::Horizontal);
+    ySlider->setRange(13, 30);
+
     LE=new QLineEdit;
     QString qstr=QString("COM4");
     LE->setText(qstr);
 
     int frame_width=4;
     QGridLayout* GL=new QGridLayout();
-//    GL->addWidget(LE,0/frame_width,0%frame_width);
+    int jj=0;
+    GL->addWidget(LE,jj/frame_width,jj%frame_width);
+    jj=1;
+    GL->addWidget(ySlider,jj/frame_width,jj%frame_width);
 
     QWidget *centralWidget1=new QWidget();
     centralWidget1->setLayout(GL);
@@ -46,16 +54,18 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ser_on=1;
 
 
-    vibro_plot=new QwtPlot;
+    vibro_plot=new QwtPlot;    
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
 
     ftt_plot=new QwtPlot;
+    ftt_plot->setAxisTitle(QwtPlot::xBottom, "frequency, Hz");
+    ftt_plot->setAxisTitle(QwtPlot::yLeft, "Amplitude");
     drawingInit(ftt_plot,QString("ftt value"));
     fttCurve=new myCurve(bufShowSize,ftt_plot,"fft", Qt::black, Qt::black);
     ftt_plot->show();
-    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax/2);
+    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax);
 
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
@@ -117,8 +127,10 @@ void MainWindow::paintEvent(QPaintEvent* e)
     if(draw_on)
     vibroCurve->signalDrawing();
 
-
+ if(draw_on)
     fttCurve->set_Drawing(ft,0);
+
+    ftt_plot->setAxisScale(QwtPlot::yLeft,0,ySlider->value());
 
 //    for(int j=0;j<lines_N;j++)
 //        painter->drawLine(ML[j].x[0],ML[j].y[0],ML[j].x[1],ML[j].y[1]);

@@ -36,7 +36,7 @@ void serial_obj::doWork()
         readVar=(int8_t)hSerial.ReadCOM(readVarON);
         if(readVarON)
         {
-            time+=.00046;
+            time+=dt;
             MC->dataRefresh((int8_t)readVar);
 //            FTC->dataRefresh();
             ftt( (int8_t)readVar,ft,time);

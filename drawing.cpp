@@ -38,7 +38,7 @@ void myCurve::signalDrawing()
 
     for (int i=0;i<data.size();i++)
     {
-        points<<QPointF(i,data[(ind_c+i+1)%s]);
+        points<<QPointF(i*dt,data[(ind_c+i+1)%s]);
     }
     setSamples( points ); // ассоциировать набор точек с кривой
     attach( d_plot); // отобразить кривую на графике
@@ -61,8 +61,8 @@ void myCurve::set_Drawing(std::vector<fcomplex>& y,int ii)
     // Добавить точки на ранее созданную кривую
     QPolygonF points;
 
-    for(int i=2;i<(y.size())/2;i++)
-        points<<QPointF(fmax*i/NFT,(fabs(y[i+ii])+0.0001));
+    for(int i=2;i<(y.size());i++)
+        points<<QPointF(fmax*i/NFT,log(fabs(y[i+ii])+0.0001));
 
     setSamples( points ); // ассоциировать набор точек с кривой
     attach( d_plot); // отобразить кривую на графике

@@ -1,6 +1,7 @@
 #ifndef SERIALQOBJ_H
 #define SERIALQOBJ_H
 #include "headers.h"
+//#include "ftt.h"
 //#include "stand_dev.h"
 #include "serial.h"
 #include "drawing.h"
@@ -8,6 +9,7 @@ class serial_obj : public QObject
 {
     Q_OBJECT
 public:
+    int cnt;
     Serial hSerial;
     int* ind_c;
     int8_t EMG_I;

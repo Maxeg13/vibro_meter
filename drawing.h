@@ -7,7 +7,7 @@ using namespace std;
 class myCurve:public QwtPlotCurve
 {
 public:
-
+    QPolygonF points;
     vector<float> data;
     QwtPlot* d_plot;
     QwtSymbol *symbol;

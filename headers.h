@@ -22,6 +22,7 @@
 #include <qwt_picker_machine.h>
 #include <complex>
 #include <stdio.h>
+
 #define NFT 700
 #define fmax 1000
 #define dt 1./2220

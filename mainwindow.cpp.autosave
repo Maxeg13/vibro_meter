@@ -98,7 +98,6 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
     {
         SO->cnt=0;
 
-
         for (int i=0;i<NFT;i++)
             ft[i]=0;
 

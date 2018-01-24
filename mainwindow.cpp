@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    QString qstr=QString("COM4");
+    QString qstr=QString("COM8");
     LE->setText(qstr);
 
     int frame_width=4;
@@ -97,7 +97,6 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
     if(e->text()==" ")
     {
         SO->cnt=0;
-
 
         for (int i=0;i<NFT;i++)
             ft[i]=0;
@@ -229,6 +228,7 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
     //    grid->attach( d_plot ); // добавить сетку к полю графика
 
 
-    d_plot->setMinimumSize(550,220);
+//    d_plot->setMinimumSize(550,220);
+    d_plot->resize(1000,400);
 
 }

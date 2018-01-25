@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    QString qstr=QString("COM8");
+    QString qstr=QString("COM5");
     LE->setText(qstr);
 
     int frame_width=4;
@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
+    vibro_plot->setAxisScale(QwtPlot::yLeft,-100,100);
 
     ftt_plot=new QwtPlot;
     ftt_plot->setAxisTitle(QwtPlot::xBottom, "frequency, Hz");

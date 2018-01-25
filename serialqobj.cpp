@@ -1,5 +1,8 @@
 #include "serialqobj.h"
 #include "ftt.h"
+int stop_bit;
+int stop_cnt;
+
 serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft)
 {
     MC=_MC;
@@ -36,6 +39,12 @@ void serial_obj::doWork()
         readVar=(int8_t)hSerial.ReadCOM(readVarON);
         if(readVarON)
         {
+//            if((int8_t)readVar==127)
+//                stop_bit=1;
+
+
+//            if(stop_bit)
+//            {
             time+=dt;
             MC->dataRefresh((int8_t)readVar);
 //            FTC->dataRefresh();

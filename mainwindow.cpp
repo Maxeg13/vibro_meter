@@ -9,6 +9,8 @@
 #include <QThread>
 #include <QMouseEvent>
 #include "QSlider"
+#include "QPushButton"
+
 
 vector<fcomplex> ft;
 vector<float> dataFFT;
@@ -18,11 +20,14 @@ int bufShowSize=3000;
 Serial hSerial;
 QSlider *ySlider;
 QLineEdit* LE;
-QThread* thread;
+QPushButton* sendB;
+
 QTimer *timer;
 QwtPlot *vibro_plot, *ftt_plot;
-
 myCurve* vibroCurve, *fttCurve;
+QString qstr;
+QThread* thread;
+extern bool hear;
 //work* WK;
 
 
@@ -31,13 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     ft.resize(NFT);
+    sendB=new QPushButton("listening");
 
     ySlider=new QSlider();
     ySlider->setOrientation(Qt::Horizontal);
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    QString qstr=QString("COM5");
+    qstr=QString("COM8");
     LE->setText(qstr);
 
     int frame_width=4;
@@ -46,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
     GL->addWidget(LE,jj/frame_width,jj%frame_width);
     jj=1;
     GL->addWidget(ySlider,jj/frame_width,jj%frame_width);
+    jj=2;
+    GL->addWidget(sendB,jj/frame_width,jj%frame_width);
 
     QWidget *centralWidget1=new QWidget();
     centralWidget1->setLayout(GL);
@@ -53,7 +61,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //    ser_on=1;
-
+    ftt_plot=new QwtPlot;
+    ftt_plot->setAxisTitle(QwtPlot::xBottom, "frequency, Hz");
+    ftt_plot->setAxisTitle(QwtPlot::yLeft, "Amplitude");
+    drawingInit(ftt_plot,QString("ftt value"));
+    fttCurve=new myCurve(bufShowSize,ftt_plot,"fft", Qt::black, Qt::black);
+    ftt_plot->show();
+    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax);
 
     vibro_plot=new QwtPlot;
     vibro_plot->setAxisTitle(QwtPlot::xBottom, "time, sec");
@@ -63,25 +77,40 @@ MainWindow::MainWindow(QWidget *parent) :
     vibro_plot->show();
     vibro_plot->setAxisScale(QwtPlot::yLeft,-100,100);
 
-    ftt_plot=new QwtPlot;
-    ftt_plot->setAxisTitle(QwtPlot::xBottom, "frequency, Hz");
-    ftt_plot->setAxisTitle(QwtPlot::yLeft, "Amplitude");
-    drawingInit(ftt_plot,QString("ftt value"));
-    fttCurve=new myCurve(bufShowSize,ftt_plot,"fft", Qt::black, Qt::black);
-    ftt_plot->show();
-    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax);
+
 
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
     timer->start(40);
     this->update();
 
+    connect(LE,SIGNAL(returnPressed()),this,SLOT(setCOM()));
+    connect(sendB,SIGNAL(clicked()),this, SLOT(hearing()));
+}
+
+void MainWindow::setCOM()
+{
+    if(SO==NULL)
+        delete SO;
+    QThread* thread;
     SO=new serial_obj(qstr, vibroCurve, ft);
-    QThread* thread = new QThread( );
+    thread = new QThread( );
     SO->moveToThread(thread);
     connect(thread,SIGNAL(started()),SO,SLOT(doWork()));
     thread->start();
+    LE->setDisabled(true);
+}
 
+void MainWindow::hearing()
+{
+    hear=!hear;
+    switch(hear)
+    {
+    case false:
+        sendB->setText("not listening");break;
+    case true:
+        sendB->setText("listening");
+    }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
@@ -92,8 +121,8 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
         for (int i=0;i<NFT;i++)
             acc+=fabs(ft[i]*ft[i]);
 
-//        qDebug()<<acc;
-            qDebug()<<10*log(acc/520000);
+        //        qDebug()<<acc;
+        qDebug()<<10*log(acc/520000);
     }
     if(e->text()==" ")
     {
@@ -102,8 +131,8 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
         for (int i=0;i<NFT;i++)
             ft[i]=0;
 
-//        for(int i=0;i<bufShowSize;i++)
-//            ftt( vibroCurve->data[(i+vibroCurve->ind_c)&bufShowSize],ft,i*dt);
+        //        for(int i=0;i<bufShowSize;i++)
+        //            ftt( vibroCurve->data[(i+vibroCurve->ind_c)&bufShowSize],ft,i*dt);
     }
     if(e->text()=="d")
     {
@@ -229,7 +258,7 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
     //    grid->attach( d_plot ); // добавить сетку к полю графика
 
 
-//    d_plot->setMinimumSize(550,220);
+    //    d_plot->setMinimumSize(550,220);
     d_plot->resize(1000,400);
 
 }

@@ -22,7 +22,9 @@ private:
 protected:
      void paintEvent(QPaintEvent *e);
 public slots:
+     void hearing();
      void drawing();
+     void setCOM();
 
 };
 

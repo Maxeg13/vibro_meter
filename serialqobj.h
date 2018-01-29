@@ -27,7 +27,7 @@ public:
 
     int readVar;
     vector<fcomplex>& ft;
-
+    void work();
     int ptr;
     serial_obj(QString, myCurve *, vector<fcomplex>&);
     void init(QString);

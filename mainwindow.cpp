@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
-    vibro_plot->setAxisScale(QwtPlot::yLeft,-100,100);
+    vibro_plot->setAxisScale(QwtPlot::yLeft,-128,128);
 
 
 
@@ -92,6 +92,9 @@ void MainWindow::setCOM()
 {
     if(SO==NULL)
         delete SO;
+
+    qstr=LE->text();
+//    LE->setText(qstr);
     QThread* thread;
     SO=new serial_obj(qstr, vibroCurve, ft);
     thread = new QThread( );

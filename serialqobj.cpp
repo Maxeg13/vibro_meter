@@ -3,6 +3,8 @@
 int stop_bit=1;
 int stop_cnt;
 bool hear=1;
+float time;
+
 
 serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft)
 {
@@ -33,56 +35,49 @@ serial_obj::~serial_obj()
 {};
 void serial_obj::doWork()
 {
-    static float time;
+
     while(1)
     {
         bool readVarON;
         readVar=(int8_t)hSerial.ReadCOM(readVarON);
         if(readVarON)
         {
-            if((int8_t)readVar==127)
-                stop_bit=1;
+
 
 
             if(hear)
             {
-                stop_cnt++;
-                if(stop_cnt>MC->data.size()/2)
-                {
-                    stop_bit=0;
-                    stop_cnt=0;
-                }
-
-                time+=dt;
-                MC->dataRefresh((int8_t)readVar);
-                //            FTC->dataRefresh();
-                if(cnt<3000)
-                {
-                    cnt++;
-                    ftt( (int8_t)readVar,ft,time);
-                }
+                work();
             }
-            else
-                if(stop_bit)
-                {
-                    stop_cnt++;
-                    if(stop_cnt>MC->data.size()/2)
-                    {
-                        stop_bit=0;
-                        stop_cnt=0;
-                    }
+            else if(stop_bit)
+            {
+                work();
+            }
 
-                    time+=dt;
-                    MC->dataRefresh((int8_t)readVar);
-                    //            FTC->dataRefresh();
-                    if(cnt<3000)
-                    {
-                        cnt++;
-                        ftt( (int8_t)readVar,ft,time);
-                    }
-                }
+            if((int8_t)readVar==127)
+                stop_bit=1;
             //qDebug()<<fabs(ft[4]);
         }
         //            qDebug()<<(int8_t)readVar;
+    }
+}
+
+void serial_obj::work()
+{
+    stop_cnt++;
+    if(stop_cnt>MC->data.size()/2)
+    {
+        stop_bit=0;
+        stop_cnt=0;
+    }
+
+    time+=dt;
+    if((int8_t)readVar!=127)
+    MC->dataRefresh((int8_t)readVar);
+    //            FTC->dataRefresh();
+    if(cnt<3000)
+    {
+        cnt++;
+        ftt( (int8_t)readVar,ft,time);
     }
 }

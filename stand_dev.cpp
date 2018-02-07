@@ -463,3 +463,29 @@ void getFeatures_gearbox2(int8_t x, vector<float>& y)
     y[6]=LPF[3](WA[1](x));
     y[7]=(400*VLPF[1]((killRange(MFV[1](x),30))));;
 }
+
+#define ww 20
+#define wn 10
+class Wavelet
+{
+public:
+    float a[wn][ww];
+    float w[wn];
+    float scaleMoth(float x,float a)
+    {
+        float x1=x/a;
+        return((1./sqrt(a))*exp(-x1*x1)*cos(5*x1));
+    }
+    Wavelet()
+    {
+        for(int i=0;i<ww;i++)
+        {
+            for(int j=0;j<wn;j++)
+            {
+                a[j][i]=
+            }
+        }
+
+    }
+
+};

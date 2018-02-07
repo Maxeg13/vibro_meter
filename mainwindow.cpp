@@ -46,18 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     qstr=QString("COM8");
     LE->setText(qstr);
 
-    int frame_width=4;
-    QGridLayout* GL=new QGridLayout();
-    int jj=0;
-    GL->addWidget(LE,jj/frame_width,jj%frame_width);
-    jj=1;
-    GL->addWidget(ySlider,jj/frame_width,jj%frame_width);
-    jj=2;
-    GL->addWidget(sendB,jj/frame_width,jj%frame_width);
 
-    QWidget *centralWidget1=new QWidget();
-    centralWidget1->setLayout(GL);
-    setCentralWidget(centralWidget1);
+
+
 
 
     //    ser_on=1;
@@ -78,6 +69,28 @@ MainWindow::MainWindow(QWidget *parent) :
     vibro_plot->setAxisScale(QwtPlot::yLeft,-128,128);
 
 
+    int frame_width=3;
+    QGridLayout* GL=new QGridLayout();
+//    QHBoxLayout* LO=new QHBoxLayout();
+    QWidget *centralWidget1=new QWidget();
+    centralWidget1->setMinimumSize(500,250);
+    centralWidget1->setLayout(GL);
+    setCentralWidget(centralWidget1);
+
+
+    int jj=0;
+    GL->addWidget(LE,jj/frame_width,jj%frame_width);
+    jj=1;
+    GL->addWidget(ySlider,jj/frame_width,jj%frame_width);
+    jj=2;
+    GL->addWidget(sendB,jj/frame_width,jj%frame_width);
+    jj=3;
+    GL->addWidget(vibro_plot,jj/frame_width,jj%frame_width,1,3);
+    jj=4;
+    GL->setRowMinimumHeight(3,100);
+//    GL->addWidget(LO,2,0,1,3);
+//    LO->setMinimumHeight(200);
+//    LO->setVisible(0);
 
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
@@ -162,17 +175,19 @@ void MainWindow::mainCircle()
 
 void MainWindow::paintEvent(QPaintEvent* e)
 {
-    static float t=1;
-    t+=.06;
-    if(t>10)t=10;
-    for (int i=0;i<t;i++)
-        mainCircle();
+//    static float t=1;
+//    t+=.06;
+//    if(t>10)t=10;
+//    for (int i=0;i<t;i++)
+//        mainCircle();
 
     QPainter* painter=new QPainter(this);
     painter->setRenderHint(QPainter::Antialiasing, 1);
     QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
+    painter->drawEllipse(QPoint(0,0),40,40);
     painter->scale(1.5,1.5);
+
 
     if(draw_on)
         vibroCurve->signalDrawing();
@@ -262,6 +277,6 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
 
 
     //    d_plot->setMinimumSize(550,220);
-    d_plot->resize(1000,400);
+    d_plot->resize(500,250);
 
 }

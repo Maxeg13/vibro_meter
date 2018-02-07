@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     serial.cpp \
     stdafx.cpp \
     serialqobj.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    stand_dev.cpp
 
 HEADERS  += \
     work.h \
@@ -31,7 +32,8 @@ HEADERS  += \
     targetver.h \
     serialqobj.h \
     mainwindow.h \
-    ftt.h
+    ftt.h \
+    stand_dev.h
 
 DISTFILES += \
 

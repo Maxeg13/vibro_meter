@@ -1,9 +1,12 @@
-#include<stdint.h>
+
 #ifndef STANDART_DEV
 #define STANDART_DEV
+#include<stdint.h>
 #include <vector>
 #include <iostream>
 #include <Eigen/Dense>
+#include "headers.h"
+
 using namespace std;
 using namespace Eigen;
 
@@ -12,6 +15,8 @@ void getFeaturesMyo(vector<float>, vector<float>&);
 void getFeatures_gearbox1(int8_t x, vector<float>&);
 
 void getFeatures_gearbox2(int8_t x, vector<float>&);
+
+int8_t thresh1(int x,int a,int b);
 
 class linearTr
 {
@@ -30,7 +35,19 @@ public:
 
 };
 
-
+class Wavelet
+{
+public:
+    int i,j,im;
+    float mas[wn][mas_n];
+    float a[wn][ww];
+    //    float w[wn];
+    float x[wn][ww];
+    float y[wn];
+    Wavelet();
+    float extract(float&);
+    float scaleMoth(float ,float);
+};
 
 
 

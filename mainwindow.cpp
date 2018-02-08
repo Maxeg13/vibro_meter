@@ -10,7 +10,7 @@
 #include <QMouseEvent>
 #include "QSlider"
 #include "QPushButton"
-
+#include "stand_dev.h"
 
 vector<fcomplex> ft;
 vector<float> dataFFT;
@@ -27,6 +27,7 @@ QwtPlot *vibro_plot, *ftt_plot;
 myCurve* vibroCurve, *fttCurve;
 QString qstr;
 QThread* thread;
+bool SO_on;
 extern bool hear;
 //work* WK;
 
@@ -43,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    qstr=QString("COM8");
+    qstr=QString("COM4");
     LE->setText(qstr);
 
 
@@ -77,17 +78,17 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-
-    int jj=0;
-    GL->addWidget(LE,jj/frame_width,jj%frame_width);
-    jj=1;
-    GL->addWidget(ySlider,jj/frame_width,jj%frame_width);
+GL->setRowMinimumHeight(0,100);
+    int jj=1;
+    GL->addWidget(LE,1,1);
     jj=2;
-    GL->addWidget(sendB,jj/frame_width,jj%frame_width);
+    GL->addWidget(ySlider,1,2);
     jj=3;
-    GL->addWidget(vibro_plot,jj/frame_width,jj%frame_width,1,3);
+    GL->addWidget(sendB,1,3);
     jj=4;
-    GL->setRowMinimumHeight(3,100);
+    GL->addWidget(vibro_plot,2,1,1,3);
+//    jj=4;
+
 //    GL->addWidget(LO,2,0,1,3);
 //    LO->setMinimumHeight(200);
 //    LO->setVisible(0);
@@ -115,6 +116,7 @@ void MainWindow::setCOM()
     connect(thread,SIGNAL(started()),SO,SLOT(doWork()));
     thread->start();
     LE->setDisabled(true);
+    SO_on=1;
 }
 
 void MainWindow::hearing()
@@ -180,13 +182,29 @@ void MainWindow::paintEvent(QPaintEvent* e)
 //    if(t>10)t=10;
 //    for (int i=0;i<t;i++)
 //        mainCircle();
-
+if(SO_on)
+{
     QPainter* painter=new QPainter(this);
-    painter->setRenderHint(QPainter::Antialiasing, 1);
+//    painter->setRenderHint(QPainter::Antialiasing, 1);
     QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QColor QC=QColor(0,0,0);
+    float h=0;
     painter->setPen(pen);
-    painter->drawEllipse(QPoint(0,0),40,40);
-    painter->scale(1.5,1.5);
+     painter->scale(2,2);
+//    painter->drawEllipse(QPoint(0,0),40,40);
+    for(int i=0;i<20;i++)
+        for(int j=0;j<mas_n;j++)
+        {
+            h=fabs(thresh1(SO->WT.mas[i][j]*50,-255,255));
+//            h=rand()%250;
+            QC.setRed(h);
+            QC.setGreen(h);
+            QC.setBlue(h);
+            pen.setColor(QC);
+            painter->setPen(pen);
+            painter->drawPoint(QPointF(j,i*2));
+        }
+//painter->scale()
 
 
     if(draw_on)
@@ -213,6 +231,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
     //        painter->drawPoint(_node[j].x,_node[j].y);
     //    }
     delete painter;
+}
 }
 
 MainWindow::~MainWindow()

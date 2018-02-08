@@ -2,13 +2,14 @@
 #define SERIALQOBJ_H
 #include "headers.h"
 //#include "ftt.h"
-//#include "stand_dev.h"
+#include "stand_dev.h"
 #include "serial.h"
 #include "drawing.h"
 class serial_obj : public QObject
 {
     Q_OBJECT
 public:
+    Wavelet WT;
     int cnt;
     Serial hSerial;
     int* ind_c;

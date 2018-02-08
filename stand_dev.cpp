@@ -464,28 +464,51 @@ void getFeatures_gearbox2(int8_t x, vector<float>& y)
     y[7]=(400*VLPF[1]((killRange(MFV[1](x),30))));;
 }
 
-#define ww 20
-#define wn 10
-class Wavelet
+
+
+float Wavelet::scaleMoth(float x,float a)
 {
-public:
-    float a[wn][ww];
-    float w[wn];
-    float scaleMoth(float x,float a)
+    float x1=(x/a-1);//(x/20-1)
+    if(x1>0)
+        if(x1<2)
+            return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos(5*x1/0.66));
+        else
+            return(0);
+}
+float Wavelet::extract(float& x1)
+{
+    for( i=0;i<wn;i++)
     {
-        float x1=x/a;
-        return((1./sqrt(a))*exp(-x1*x1)*cos(5*x1));
+        x[i][ww-1]=x1;
+        for(j=0;j<(ww-1);j++)
+            x[i][ww-2-j]=x[i][ww-1-j];
+
+        y[i]=0;
+        for(j=0;j<(ww);j++)
+            y[i]+=a[i][j]*x[i][j];
+
+        mas[i][im]=y[i];
+
     }
-    Wavelet()
+    im++;
+    if(im==mas_n)
+        im=0;
+}
+Wavelet::Wavelet()
+{
+    im=0;
+for(int i=0;i<wn;i++)
+    for(int j=0;j<mas_n;j++)
+        mas[i][j]=0;
+
+    for( i=0;i<ww;i++)
     {
-        for(int i=0;i<ww;i++)
+        for( j=0;j<wn;j++)
         {
-            for(int j=0;j<wn;j++)
-            {
-                a[j][i]=
-            }
+            y[j]=0;
+            x[j][i]=0;
+            a[j][i]=scaleMoth(i,(j+1)/20.);//2 is width
         }
-
     }
+}
 
-};

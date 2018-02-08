@@ -1,4 +1,5 @@
 #include "serialqobj.h"
+//#include "stand_dev.h"
 #include "ftt.h"
 int stop_bit=1;
 int stop_cnt;
@@ -13,7 +14,7 @@ serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft
     std::wstring str(str1.begin(),str1.end());
 
     hSerial.InitCOM(str.c_str());//was L"COM5"
-
+WT=Wavelet();
 }
 
 void serial_obj::init(QString qstr)
@@ -24,6 +25,7 @@ void serial_obj::init(QString qstr)
     std::wstring str(str1.begin(),str1.end());
 
     hSerial.InitCOM(str.c_str());//was L"COM5"
+
     //    featureOut.resize(3);
 }
 
@@ -73,7 +75,13 @@ void serial_obj::work()
 
     time+=dt;
     if((int8_t)readVar!=127)
-    MC->dataRefresh((int8_t)readVar);
+    {
+        MC->dataRefresh((int8_t)readVar);
+        float xx=(int8_t)readVar;
+        WT.extract(xx);
+       for(int i=5;i<7;i++)
+        qDebug()<<WT.y[i];
+    }
     //            FTC->dataRefresh();
     if(cnt<3000)
     {

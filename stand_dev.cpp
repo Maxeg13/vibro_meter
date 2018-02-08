@@ -1,6 +1,6 @@
 #include "stand_dev.h"
 #include<math.h>
-
+using namespace std;
 
 linearTr::linearTr(vector<float> x, vector<float> y)
 {
@@ -133,35 +133,30 @@ public:
 
 
 
-class standartDev
+
+standartDev::standartDev()
 {
-public:
-    int N;//400
-    int8_t* xPr;
-    int j;
-    long accumD;
-    float  preNorm;
-    standartDev()
-    {
-        N=400;
-        accumD=0;
-        xPr=new int8_t[N];
-        for(int i=0;i<N;i++)
-            xPr[i]=0;
-    }
-    float operator()(int y)
-    {
-        j++;
-        if(j==N)j=0;
-        xPr[j]=killRange(y,3);
-        accumD+=((int16_t)xPr[j])*((int16_t)xPr[j]);//int16_t
-        accumD-=((int16_t)xPr[(j==(N-1))?0:(j+1)])*
-                ((int16_t)xPr[(j==(N-1))?0:(j+1)]);
+    N=4;//400
+    accumD=0;
+    xPr=new int8_t[N];
+    for(int i=0;i<N;i++)
+        xPr[i]=0;
 
-        return(200*sqrt((float)accumD/N));
+    cout<<"hello";
+}
+float standartDev::operator()(int y)
+{
+    j++;
+    if(j==N)j=0;
+    xPr[j]=killRange(y,3);
+    accumD+=((int16_t)xPr[j])*((int16_t)xPr[j]);//int16_t
+    accumD-=((int16_t)xPr[(j==(N-1))?0:(j+1)])*
+            ((int16_t)xPr[(j==(N-1))?0:(j+1)]);
 
-    }
-};
+    return(200*sqrt((float)accumD/N));
+
+}
+
 
 
 
@@ -174,6 +169,7 @@ class standartDevMyo:public standartDev
 public:
     standartDevMyo()
     {
+
         N=50;
         accumD=0;
         xPr=new int8_t[N];
@@ -485,10 +481,12 @@ float Wavelet::extract(float& x1)
 
         y[i]=0;
         for(j=0;j<(ww);j++)
+        {
             y[i]+=a[i][j]*x[i][j];
 
+        }
+//        stdy[0]=STD[0](1);
         mas[i][im]=y[i];
-
     }
     im++;
     if(im==mas_n)
@@ -496,10 +494,11 @@ float Wavelet::extract(float& x1)
 }
 Wavelet::Wavelet()
 {
+STD=new standartDev[1]();
     im=0;
-for(int i=0;i<wn;i++)
-    for(int j=0;j<mas_n;j++)
-        mas[i][j]=0;
+    for(int i=0;i<wn;i++)
+        for(int j=0;j<mas_n;j++)
+            mas[i][j]=0;
 
     for( i=0;i<ww;i++)
     {
@@ -507,7 +506,7 @@ for(int i=0;i<wn;i++)
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,(j+1)/20.);//2 is width
+            a[j][i]=scaleMoth(i,0.4+j/30.);//2 is width
         }
     }
 }

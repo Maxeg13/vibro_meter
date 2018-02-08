@@ -79,8 +79,8 @@ void serial_obj::work()
         MC->dataRefresh((int8_t)readVar);
         float xx=(int8_t)readVar;
         WT.extract(xx);
-       for(int i=5;i<7;i++)
-        qDebug()<<WT.y[i];
+//       for(int i=5;i<7;i++)
+//        qDebug()<<WT.y[i];
     }
     //            FTC->dataRefresh();
     if(cnt<3000)

@@ -72,13 +72,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     int frame_width=3;
     QGridLayout* GL=new QGridLayout();
-//    QHBoxLayout* LO=new QHBoxLayout();
+    //    QHBoxLayout* LO=new QHBoxLayout();
     QWidget *centralWidget1=new QWidget();
     centralWidget1->setMinimumSize(500,250);
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-GL->setRowMinimumHeight(0,100);
+    GL->setRowMinimumHeight(0,100);
     int jj=1;
     GL->addWidget(LE,1,1);
     jj=2;
@@ -87,11 +87,11 @@ GL->setRowMinimumHeight(0,100);
     GL->addWidget(sendB,1,3);
     jj=4;
     GL->addWidget(vibro_plot,2,1,1,3);
-//    jj=4;
+    //    jj=4;
 
-//    GL->addWidget(LO,2,0,1,3);
-//    LO->setMinimumHeight(200);
-//    LO->setVisible(0);
+    //    GL->addWidget(LO,2,0,1,3);
+    //    LO->setMinimumHeight(200);
+    //    LO->setVisible(0);
 
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
@@ -108,7 +108,7 @@ void MainWindow::setCOM()
         delete SO;
 
     qstr=LE->text();
-//    LE->setText(qstr);
+    //    LE->setText(qstr);
     QThread* thread;
     SO=new serial_obj(qstr, vibroCurve, ft);
     thread = new QThread( );
@@ -177,61 +177,72 @@ void MainWindow::mainCircle()
 
 void MainWindow::paintEvent(QPaintEvent* e)
 {
-//    static float t=1;
-//    t+=.06;
-//    if(t>10)t=10;
-//    for (int i=0;i<t;i++)
-//        mainCircle();
-if(SO_on)
-{
-    QPainter* painter=new QPainter(this);
-//    painter->setRenderHint(QPainter::Antialiasing, 1);
-    QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    QColor QC=QColor(0,0,0);
-    float h=0;
-    painter->setPen(pen);
-     painter->scale(2,2);
-//    painter->drawEllipse(QPoint(0,0),40,40);
-    for(int i=0;i<20;i++)
+    //    static float t=1;
+    //    t+=.06;
+    //    if(t>10)t=10;
+    //    for (int i=0;i<t;i++)
+    //        mainCircle();
+    if(SO_on)
+    {
+        QPainter* painter=new QPainter(this);
+        //    painter->setRenderHint(QPainter::Antialiasing, 1);
+        QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        QColor QC=QColor(0,0,0);
+        float h=0;
+        painter->setPen(pen);
+        painter->scale(2,2);
+        //    painter->drawEllipse(QPoint(0,0),40,40);
+
         for(int j=0;j<mas_n;j++)
-        {
-            h=fabs(thresh1(SO->WT.mas[i][j]*50,-255,255));
-//            h=rand()%250;
-            QC.setRed(h);
-            QC.setGreen(h);
-            QC.setBlue(h);
-            pen.setColor(QC);
-            painter->setPen(pen);
-            painter->drawPoint(QPointF(j,i*2));
-        }
-//painter->scale()
+            for(int i=0;i<20;i++)
+            {
+                h=(thresh1(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*40,-255,255));
+                //            h=rand()%250;
+                if(h>0)
+                {
+//                    QC.setGreen(h);
+                    QC.setRed(h);
+
+                }
+                if(h<=0)
+                {
+                    h=-h;
+//                    QC.setGreen(h);
+                    QC.setBlue(h);
+                }
+
+                pen.setColor(QC);
+                painter->setPen(pen);
+                painter->drawPoint(QPointF(j,i*2));
+            }
+        //painter->scale()
 
 
-    if(draw_on)
-        vibroCurve->signalDrawing();
+        if(draw_on)
+            vibroCurve->signalDrawing();
 
 
-    if(draw_on)
-        fttCurve->set_Drawing(ft,0);
+        if(draw_on)
+            fttCurve->set_Drawing(ft,0);
 
 
 
-    //    ftt_plot->setAxisScale(QwtPlot::yLeft,0,ySlider->value());
+        //    ftt_plot->setAxisScale(QwtPlot::yLeft,0,ySlider->value());
 
-    //    for(int j=0;j<lines_N;j++)
-    //        painter->drawLine(ML[j].x[0],ML[j].y[0],ML[j].x[1],ML[j].y[1]);
+        //    for(int j=0;j<lines_N;j++)
+        //        painter->drawLine(ML[j].x[0],ML[j].y[0],ML[j].x[1],ML[j].y[1]);
 
-    //    pen=QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+        //    pen=QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
 
-    //    for(int j=0;j<nodes_N;j++)
-    //    {
-    //        pen.setColor(QColor(_node[j].clr[0],_node[j].clr[1],_node[j].clr[2]));
-    //        painter->setPen(pen);
-    //        painter->drawPoint(_node[j].x,_node[j].y);
-    //    }
-    delete painter;
-}
+        //    for(int j=0;j<nodes_N;j++)
+        //    {
+        //        pen.setColor(QColor(_node[j].clr[0],_node[j].clr[1],_node[j].clr[2]));
+        //        painter->setPen(pen);
+        //        painter->drawPoint(_node[j].x,_node[j].y);
+        //    }
+        delete painter;
+    }
 }
 
 MainWindow::~MainWindow()

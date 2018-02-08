@@ -10,6 +10,18 @@
 using namespace std;
 using namespace Eigen;
 
+class standartDev
+{
+public:
+    int N;//400
+    int8_t* xPr;
+    int j;
+    long accumD;
+    float  preNorm;
+    standartDev();
+    float operator()(int y);
+};
+
 void getFeaturesMyo(vector<float>, vector<float>&);
 
 void getFeatures_gearbox1(int8_t x, vector<float>&);
@@ -38,12 +50,14 @@ public:
 class Wavelet
 {
 public:
+    standartDev* STD;
     int i,j,im;
     float mas[wn][mas_n];
     float a[wn][ww];
     //    float w[wn];
     float x[wn][ww];
     float y[wn];
+    float stdy[wn];
     Wavelet();
     float extract(float&);
     float scaleMoth(float ,float);

@@ -136,7 +136,7 @@ public:
 
 standartDev::standartDev()
 {
-    N=4;//400
+    N=400;//400
     accumD=0;
     xPr=new int8_t[N];
     for(int i=0;i<N;i++)
@@ -169,7 +169,6 @@ class standartDevMyo:public standartDev
 public:
     standartDevMyo()
     {
-
         N=50;
         accumD=0;
         xPr=new int8_t[N];
@@ -322,24 +321,18 @@ public:
 
 
 
-class veryLowPassFr
+float veryLowPassFr::operator()(float x) //0.4 Hz
 {
-private:
-    float v[5];
-public:
-    float operator()(float x) //0.4 Hz
-    {
-        v[0] = v[1];
-        v[1] = v[2];
-        v[2] = (1.576334488051500671e-6 * x)
-                + (-0.99645200271929113001 * v[0])
-                + (1.99644569738133892400 * v[1]);
-        return
-                (v[0] + v[2])
-                +2 * v[1];
-    }
-    
-};
+    v[0] = v[1];
+    v[1] = v[2];
+    v[2] = (1.576334488051500671e-6 * x)
+            + (-0.99645200271929113001 * v[0])
+            + (1.99644569738133892400 * v[1]);
+    return
+            (v[0] + v[2])
+            +2 * v[1];
+}
+
 
 class veryLowPassFrMyo
 {
@@ -360,23 +353,23 @@ public:
 
 };
 
-class lowPassFr
+
+lowPassFr::lowPassFr()
 {
-private:
-    float v[5];
-public:
-    float operator()(float x) //class II
-    {
-        v[0] = v[1];
-        v[1] = v[2];
-        v[2] = (6.300290918370700345e-5 * x)
-                + (-0.97269313627177789172 * v[0])
-                + (1.97244112463504306376 * v[1]);
-        return
-                (v[0] + v[2])
-                +2 * v[1];
-    }
-};
+    for (int i=0;i<5;i++)
+        v[i]=0;
+}
+float lowPassFr::operator()(float x)
+{
+    v[0] = v[1];
+    v[1] = v[2];
+    v[2] = (6.300290918370700345e-5 * x)
+            + (-0.97269313627177789172 * v[0])
+            + (1.97244112463504306376 * v[1]);
+    return
+            (v[0] + v[2])
+            +2 * v[1];
+}
 
 
 class  lowPassFrMyo
@@ -416,10 +409,11 @@ public:
 };
 
 
-standartDevMyo STDM[8];
+//standartDevMyo STDM[8];
 lowPassFrMyo LPFM[16], LPFM2[8];
 
-standartDev STD[2];
+//dangerous place!!!!!!!!!!!!!!
+//standartDev STD[2];
 frBuHp2 FBH[2];
 //bandPassFr BPF[2];
 matchedFr MF[4];
@@ -429,39 +423,56 @@ veryLowPassFrMyo VLPFM[8], VLPFM2[8];
 matchedFrV MFV[2];
 matchedFrHAAR1 HAAR1[8];
 integrator INTEGR[2];
-featureExtr1 FE1[2];
+//featureExtr1 FE1[2];
 WillisonAmp WA[2];
 
 void getFeaturesMyo(vector<float> x, vector<float>& y)
 {
-    //    y=x;
-    for(int i=0;i<x.size();i++)
-        y[i]=LPFM[i](.02*STDM[i](x[i]));
-    for(int i=0;i<x.size();i++)
-        y[i+x.size()]=9000*LPFM2[i](VLPFM[i](HAAR1[i](x[i])));
-    //        y[i+x.size()]=((HAAR1[i](x[i])));
+
+    //    for(int i=0;i<x.size();i++)
+    //        y[i]=LPFM[i](.02*STDM[i](x[i]));
+    //    for(int i=0;i<x.size();i++)
+    //        y[i+x.size()]=9000*LPFM2[i](VLPFM[i](HAAR1[i](x[i])));
+
 
 }
 
 void getFeatures_gearbox1(int8_t x, vector<float>& y)
 {
 
-    y[0]=FE1[0](x)/20;
-    y[1]=LPF[0](STD[0](x));
-    y[2]=LPF[1](WA[0](x));
-    y[3]=(400*VLPF[0]((killRange(MFV[0](x),30))));
+    //    y[0]=FE1[0](x)/20;
+    //    y[1]=LPF[0](STD[0](x));
+    //    y[2]=LPF[1](WA[0](x));
+    //    y[3]=(400*VLPF[0]((killRange(MFV[0](x),30))));
 }
 
 void getFeatures_gearbox2(int8_t x, vector<float>& y)
 {
-    y[4]=FE1[1](x)/20;
-    y[5]=LPF[2](STD[1](x));
-    y[6]=LPF[3](WA[1](x));
-    y[7]=(400*VLPF[1]((killRange(MFV[1](x),30))));;
+    //    y[4]=FE1[1](x)/20;
+    //    y[5]=LPF[2](STD[1](x));
+    //    y[6]=LPF[3](WA[1](x));
+    //    y[7]=(400*VLPF[1]((killRange(MFV[1](x),30))));
 }
 
 
+Wavelet::Wavelet()
+{
+    FR=new veryLowPassFr[wn]();
+    im=0;
+    for(int i=0;i<wn;i++)
+        for(int j=0;j<mas_n;j++)
+            mas[i][j]=0;
 
+    for( i=0;i<ww;i++)
+    {
+        for( j=0;j<wn;j++)
+        {
+            y[j]=0;
+            x[j][i]=0;
+            a[j][i]=scaleMoth(i,0.4+j/40.);//2 is width
+        }
+    }
+}
 float Wavelet::scaleMoth(float x,float a)
 {
     float x1=(x/a-1);//(x/20-1)
@@ -483,31 +494,22 @@ float Wavelet::extract(float& x1)
         for(j=0;j<(ww);j++)
         {
             y[i]+=a[i][j]*x[i][j];
-
         }
-//        stdy[0]=STD[0](1);
+//        stdy[i]=FR[i](y[i]);
+
         mas[i][im]=y[i];
+
     }
+    max=0.0001;
+    for(i=0;i<wn;i++)
+    {
+        if(mas[i][im]>max)
+            max=mas[i][im];
+    }
+
     im++;
     if(im==mas_n)
         im=0;
 }
-Wavelet::Wavelet()
-{
-STD=new standartDev[1]();
-    im=0;
-    for(int i=0;i<wn;i++)
-        for(int j=0;j<mas_n;j++)
-            mas[i][j]=0;
 
-    for( i=0;i<ww;i++)
-    {
-        for( j=0;j<wn;j++)
-        {
-            y[j]=0;
-            x[j][i]=0;
-            a[j][i]=scaleMoth(i,0.4+j/30.);//2 is width
-        }
-    }
-}
 

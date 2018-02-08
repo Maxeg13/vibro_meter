@@ -10,6 +10,27 @@
 using namespace std;
 using namespace Eigen;
 
+
+class lowPassFr
+{
+private:
+    float v[5];
+public:
+    lowPassFr();
+    float operator()(float x);
+};
+
+
+
+
+class veryLowPassFr
+{
+private:
+    float v[5];
+public:
+    float operator()(float x); //0.4 Hz
+};
+
 class standartDev
 {
 public:
@@ -47,10 +68,12 @@ public:
 
 };
 
+//standartDev STD2[wn];
 class Wavelet
 {
 public:
-    standartDev* STD;
+    float max;
+    veryLowPassFr* FR;
     int i,j,im;
     float mas[wn][mas_n];
     float a[wn][ww];
@@ -62,17 +85,4 @@ public:
     float extract(float&);
     float scaleMoth(float ,float);
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 #endif

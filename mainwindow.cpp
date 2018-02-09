@@ -196,7 +196,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
         for(int j=0;j<mas_n;j++)
             for(int i=0;i<20;i++)
             {
-                h=(thresh1(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*100,-255,255));
+                h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*30,-255,255));
                 //            h=rand()%250;
                 if(h>0)
                 {

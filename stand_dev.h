@@ -10,6 +10,8 @@
 using namespace std;
 using namespace Eigen;
 
+float thresh_f(float, float, float);
+int killRange(int x, int thr );
 
 class lowPassFr
 {

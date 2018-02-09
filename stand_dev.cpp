@@ -102,6 +102,12 @@ int killRange(int x, int thr )
 }
 
 
+float thresh_f(float x, float a, float b)
+{
+    if(x<a)return(a);
+    if(x>b)return(b);
+    return(x);
+}
 
 int8_t thresh1(int x,int a,int b)
 {
@@ -463,21 +469,29 @@ Wavelet::Wavelet()
         for(int j=0;j<mas_n;j++)
             mas[i][j]=0;
 
-    for( i=0;i<ww;i++)
+    for( j=0;j<wn;j++)
     {
-        for( j=0;j<wn;j++)
+        float mean=0;
+        for( i=0;i<ww;i++)
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,0.4+j/40.);//2 is width
+            a[j][i]=scaleMoth(i,0.1+j/2.);//2 is width
+            mean+=a[j][i];
+        }
+        mean/=ww;
+        for( i=0;i<ww;i++)
+        {
+//            a[j][i]-=mean;
         }
     }
 }
+
 float Wavelet::scaleMoth(float x,float a)
 {
-    float x1=(x/a-1);//(x/20-1)
-    if(x1>0)
-        if(x1<2)
+    float x1=((x-10)/a);//(x/20-1)
+    if(x1>(5-a))
+        if(x1<(5+a))
             return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos(5*x1/0.66));
         else
             return(0);
@@ -495,9 +509,9 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-//        stdy[i]=FR[i](y[i]);
+        stdy[i]=FR[i](y[i]);
 
-        mas[i][im]=y[i];
+        mas[i][im]=stdy[i];
 
     }
     max=0.0001;

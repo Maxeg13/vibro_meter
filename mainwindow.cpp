@@ -14,6 +14,7 @@
 
 vector<fcomplex> ft;
 vector<float> dataFFT;
+vector<float> autoc;
 
 bool draw_on=1;
 int bufShowSize=3000;
@@ -36,6 +37,8 @@ extern bool hear;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    autoc.resize(100);
+
     ft.resize(NFT);
     sendB=new QPushButton("listening");
 
@@ -59,7 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(ftt_plot,QString("ftt value"));
     fttCurve=new myCurve(bufShowSize,ftt_plot,"fft", Qt::black, Qt::black);
     ftt_plot->show();
-    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax);
+//    ftt_plot->setAxisScale(QwtPlot::xBottom,0,fmax);
+//    ftt_plot->setAxisScale(QwtPlot::yLeft,0,1300);
 
     vibro_plot=new QwtPlot;
     vibro_plot->setAxisTitle(QwtPlot::xBottom, "time, sec");
@@ -156,6 +160,11 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
     {
         draw_on=!draw_on;
     }
+    if(e->text()=="u")
+    {
+//        qDebug()<<vibroCurve->data[(vibroCurve->ind_c+0)%3000];
+        autocorr(vibroCurve->data,vibroCurve->ind_c,autoc);
+    }
 }
 
 void MainWindow::drawing()
@@ -192,28 +201,28 @@ void MainWindow::paintEvent(QPaintEvent* e)
         painter->setPen(pen);
         painter->scale(2,2);
         //    painter->drawEllipse(QPoint(0,0),40,40);
-
+        int i=0;
         for(int j=0;j<mas_n;j++)
-            for(int i=0;i<20;i++)
+            for( i=0;i<20;i++)
             {
-                h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*30,-255,255));
-                //            h=rand()%250;
-                if(h>0)
-                {
-//                    QC.setGreen(h);
-                    QC.setRed(h);
+//                h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*30,-255,255));
+//                //            h=rand()%250;
+//                if(h>0)
+//                {
+//                    //                    QC.setGreen(h);
+//                    QC.setRed(h);
 
-                }
-                if(h<=0)
-                {
-                    h=-h;
-//                    QC.setGreen(h);
-                    QC.setBlue(h);
-                }
+//                }
+//                if(h<=0)
+//                {
+//                    h=-h;
+//                    //                    QC.setGreen(h);
+//                    QC.setBlue(h);
+//                }
 
-                pen.setColor(QC);
-                painter->setPen(pen);
-                painter->drawPoint(QPointF(j,i*2));
+//                pen.setColor(QC);
+//                painter->setPen(pen);
+//                painter->drawPoint(QPointF(j,i*2));
             }
         //painter->scale()
 
@@ -222,10 +231,11 @@ void MainWindow::paintEvent(QPaintEvent* e)
             vibroCurve->signalDrawing();
 
 
-        if(draw_on)
-            fttCurve->set_Drawing(ft,0);
+//        if(draw_on)
+//            fttCurve->set_Drawing(ft,0);
 
-
+                if(draw_on)
+                    fttCurve->set_Drawing(autoc);
 
         //    ftt_plot->setAxisScale(QwtPlot::yLeft,0,ySlider->value());
 

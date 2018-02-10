@@ -19,6 +19,7 @@ public:
     void signalDrawing();
     void pointDrawing(float , float);
     void set_Drawing(vector<fcomplex> &y, int);
+    void set_Drawing(vector<float>& y);
 };
 
 

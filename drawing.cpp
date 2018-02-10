@@ -70,3 +70,17 @@ void myCurve::set_Drawing(std::vector<fcomplex>& y,int ii)
     attach( d_plot); // отобразить кривую на графике
     points.resize(0);
 }
+
+
+void myCurve::set_Drawing(std::vector<float>& y)
+{
+    // Добавить точки на ранее созданную кривую
+    QPolygonF points;
+
+    for(int i=0;i<(y.size());i++)
+        points<<QPointF(i,((y[i])));
+
+    setSamples( points ); // ассоциировать набор точек с кривой
+    attach( d_plot); // отобразить кривую на графике
+    points.resize(0);
+}

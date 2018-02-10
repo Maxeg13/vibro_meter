@@ -10,6 +10,7 @@
 using namespace std;
 using namespace Eigen;
 
+void autocorr(vector<float> x, int ,vector<float>& y);
 float thresh_f(float, float, float);
 int killRange(int x, int thr );
 

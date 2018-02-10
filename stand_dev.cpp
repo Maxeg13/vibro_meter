@@ -482,7 +482,7 @@ Wavelet::Wavelet()
         mean/=ww;
         for( i=0;i<ww;i++)
         {
-//            a[j][i]-=mean;
+            //            a[j][i]-=mean;
         }
     }
 }
@@ -524,6 +524,19 @@ float Wavelet::extract(float& x1)
     im++;
     if(im==mas_n)
         im=0;
+}
+
+void autocorr(vector<float> x,int ind, vector<float>& y)
+{
+    int s=x.size();
+    for(int i=0;i<100;i++)
+    {
+        y[i]=0;
+        for(int j=0;j<100;j++)
+        {
+            y[i]+=x[(s-1-j+ind)%s]*x[(s-1-j-i+ind)%s];
+        }
+    }
 }
 
 

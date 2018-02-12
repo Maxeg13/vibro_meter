@@ -194,9 +194,9 @@ void MainWindow::paintEvent(QPaintEvent* e)
         //    painter->drawEllipse(QPoint(0,0),40,40);
 
         for(int j=0;j<mas_n;j++)
-            for(int i=0;i<20;i++)
+            for(int i=0;i<wn;i++)
             {
-                h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*30,-255,255));
+                h=(thresh_f(SO->WT.mas[i][j]*200,-255,255));
                 //            h=rand()%250;
                 if(h>0)
                 {

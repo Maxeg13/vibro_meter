@@ -476,33 +476,49 @@ Wavelet::Wavelet()
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,0.1+j/2.);//2 is width
-            mean+=a[j][i];
+            a[j][i]=scaleMoth(i,.2+j);//2 is width//ten times at least
+            //            mean+=a[j][i];
         }
-        mean/=ww;
-        for( i=0;i<ww;i++)
-        {
-//            a[j][i]-=mean;
-        }
+        //        mean/=ww;
+        //        for( i=0;i<ww;i++)
+        //        {
+        //            a[j][i]-=mean;
+        //        }
     }
 }
 
-float Wavelet::scaleMoth(float x,float a)
+float Morlet(float x,float a)
 {
-    float x1=((x-10)/a);//(x/20-1)
-    if(x1>(5-a))
-        if(x1<(5+a))
-            return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos(5*x1/0.66));
+    float x1=((x-10)/4.);//(x/20-1)
+    if(x1>-10)
+        if(x1<10)
+            //            return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos(5*x1/0.66));
+            return((1./sqrt(3.))*exp(-x1*x1/0.66/0.66)*cos((x1)/a/0.66));
         else
             return(0);
 }
+
+float HAAR(float x, float a)
+{
+    if(x<a)
+        return(-1);
+    else
+        return 1;
+}
+
+float Wavelet::scaleMoth(float x, float a)
+{
+    return(HAAR(x,a));
+//    return();
+}
+
 float Wavelet::extract(float& x1)
 {
     for( i=0;i<wn;i++)
     {
-        x[i][ww-1]=x1;
         for(j=0;j<(ww-1);j++)
-            x[i][ww-2-j]=x[i][ww-1-j];
+            x[i][j]=x[i][j+1];
+        x[i][ww-1]=x1;
 
         y[i]=0;
         for(j=0;j<(ww);j++)
@@ -510,6 +526,7 @@ float Wavelet::extract(float& x1)
             y[i]+=a[i][j]*x[i][j];
         }
         stdy[i]=FR[i](y[i]);
+        //        stdy[i]=y[i];
 
         mas[i][im]=stdy[i];
 

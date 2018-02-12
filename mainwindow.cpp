@@ -201,7 +201,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
                 for(int i=0;i<wn;i++)
                 {
 //                    qDebug()<<SO->WT.mas[i][(j)];
-                    h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*100,-255,255));
+                    h=(thresh_f(SO->WT.mas[i][(j)]*100,-255,255));
                     //            h=rand()%250;
                     if(h>=0)
                     {

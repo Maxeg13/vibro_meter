@@ -463,6 +463,7 @@ void getFeatures_gearbox2(int8_t x, vector<float>& y)
 
 Wavelet::Wavelet()
 {
+    max_i=0;
     FR=new veryLowPassFr[wn]();
     im=0;
     for(int i=0;i<wn;i++)
@@ -528,14 +529,15 @@ float Wavelet::extract(float& x1)
             y[i]+=a[i][j]*x[i][j];
         }
 //        stdy[i]=FR[i](y[i]);
-        stdy[i]=fabs(y[i]);
-        mas[i][im]=stdy[i];
+        stdy[i]=(y[i]);
+//        mas[i][im]=stdy[i];
 
     }
     max=0.0;
 
     for(i=0;i<wn;i++)
     {
+        mas[i][im]=stdy[i];
 //        mas[i][im]=0;
         if((stdy[i])>max)
         {
@@ -545,10 +547,12 @@ float Wavelet::extract(float& x1)
 
     }
 
-//    mas[max_i][im]=20;
+//    mas[max_i][im]=40;
+
     im++;
     if(im==mas_n)
         im=0;
+
 }
 
 

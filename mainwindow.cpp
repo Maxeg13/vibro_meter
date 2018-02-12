@@ -178,6 +178,7 @@ void MainWindow::mainCircle()
 
 void MainWindow::paintEvent(QPaintEvent* e)
 {
+//        qDebug()<<SO->WT.max_i;
     //    static float t=1;
     //    t+=.06;
     //    if(t>10)t=10;
@@ -199,19 +200,22 @@ void MainWindow::paintEvent(QPaintEvent* e)
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-                    h=(thresh_f(SO->WT.mas[i][(j)]*100,-255,255));
+//                    qDebug()<<SO->WT.mas[i][(j)];
+                    h=(thresh_f(SO->WT.mas[i][(j-SO->WT.im-1)%mas_n]*100,-255,255));
                     //            h=rand()%250;
-                    if(h>0)
+                    if(h>=0)
                     {
                         //                    QC.setGreen(h);
                         QC.setRed(h);
-
+                        QC.setBlue(0);
+//qDebug()<<
                     }
-                    if(h<=0)
+                    if(h<0)
                     {
                         h=-h;
                         //                    QC.setGreen(h);
                         QC.setBlue(h);
+                        QC.setRed(0);
                     }
 
                     pen.setColor(QC);

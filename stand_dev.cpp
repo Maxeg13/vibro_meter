@@ -487,15 +487,17 @@ Wavelet::Wavelet()
     }
 }
 
+float badMorlet(float x,float a)
+{
+    float x1=((x-wn/2.)/4.);//(x/20-1)
+
+            return((1./sqrt(3.))*exp(-x1*x1/0.66/0.66)*sin((x1)/a/0.66));
+}
+
 float Morlet(float x,float a)
 {
-    float x1=((x-10)/4.);//(x/20-1)
-    if(x1>-10)
-        if(x1<10)
-            //            return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos(5*x1/0.66));
-            return((1./sqrt(3.))*exp(-x1*x1/0.66/0.66)*cos((x1)/a/0.66));
-        else
-            return(0);
+    float x1=((x-wn/2.)/a);//(x/20-1)
+            return((1./sqrt(a))*exp(-x1*x1/0.66/0.66)*cos((x1)/0.66));
 }
 
 float HAAR(float x, float a)
@@ -508,7 +510,7 @@ float HAAR(float x, float a)
 
 float Wavelet::scaleMoth(float x, float a)
 {
-    return(HAAR(x,a));
+    return(Morlet(x,a));
 //    return();
 }
 

@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-    GL->setRowMinimumHeight(0,100);
+    GL->setRowMinimumHeight(0,wn*5);
     int jj=1;
     GL->addWidget(LE,1,1);
     jj=2;
@@ -199,7 +199,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-                    h=(thresh_f(SO->WT.mas[i][(j)]*10000,-255,255));
+                    h=(thresh_f(SO->WT.mas[i][(j)]*300000,-255,255));
                     //            h=rand()%250;
                     if(h>0)
                     {

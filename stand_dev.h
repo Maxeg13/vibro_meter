@@ -74,6 +74,7 @@ public:
 class Wavelet
 {
 public:
+    int max_i;
     float max;
     veryLowPassFr* FR;
     int i,j,im;

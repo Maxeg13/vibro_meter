@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGridLayout* GL=new QGridLayout();
     //    QHBoxLayout* LO=new QHBoxLayout();
     QWidget *centralWidget1=new QWidget();
-    centralWidget1->setMinimumSize(500,250);
+    centralWidget1->setMinimumSize(700,250);
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
@@ -188,18 +188,18 @@ void MainWindow::paintEvent(QPaintEvent* e)
         if(draw_on)
         {
             QPainter* painter=new QPainter(this);
-                painter->setRenderHint(QPainter::Antialiasing, 1);
-            QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+//                painter->setRenderHint(QPainter::Antialiasing, 1);
+            QPen pen(Qt::black, 1);
             QColor QC=QColor(0,0,0);
             float h=0;
             painter->setPen(pen);
-            painter->scale(2,2);
+            painter->scale(4,4);
             //    painter->drawEllipse(QPoint(0,0),40,40);
 
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-                    h=(thresh_f(SO->WT.mas[i][(j)]*300000,-255,255));
+                    h=(thresh_f(SO->WT.mas[i][(j)]*100,-255,255));
                     //            h=rand()%250;
                     if(h>0)
                     {
@@ -216,7 +216,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
 
                     pen.setColor(QC);
                     painter->setPen(pen);
-                    painter->drawPoint(QPointF(j,i*2));
+                    painter->drawPoint(QPointF(j,i));
                 }
             //painter->scale()
 

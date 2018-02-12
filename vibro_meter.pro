@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = vibro_meter
 TEMPLATE = app
 INCLUDEPATH += C:/QWT/include
+INCLUDEPATH += C:/eigen-eigen-332
 LIBS += -LC:/QWT/lib -lqwt
 
 SOURCES += main.cpp\

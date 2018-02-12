@@ -477,13 +477,13 @@ Wavelet::Wavelet()
             y[j]=0;
             x[j][i]=0;
             a[j][i]=scaleMoth(i,.2+j);//2 is width//ten times at least
-            //            mean+=a[j][i];
+                        mean+=a[j][i];
         }
-        //        mean/=ww;
-        //        for( i=0;i<ww;i++)
-        //        {
-        //            a[j][i]-=mean;
-        //        }
+                mean/=ww;
+                for( i=0;i<ww;i++)
+                {
+                    a[j][i]-=mean;
+                }
     }
 }
 

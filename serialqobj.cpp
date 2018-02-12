@@ -14,7 +14,7 @@ serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft
     std::wstring str(str1.begin(),str1.end());
 
     hSerial.InitCOM(str.c_str());//was L"COM5"
-WT=Wavelet();
+    WT=Wavelet();
 }
 
 void serial_obj::init(QString qstr)
@@ -76,12 +76,12 @@ void serial_obj::work()
     time+=dt;
     if((int8_t)readVar!=127)
     {
-        readVar=killRange(readVar,12);
+        readVar=killRange(readVar,3);
         MC->dataRefresh((int8_t)readVar);
         float xx=(int8_t)readVar;
         WT.extract(xx);
-//       for(int i=5;i<7;i++)
-//        qDebug()<<WT.mas[10][WT.im];
+        //       for(int i=5;i<7;i++)
+        //        qDebug()<<WT.mas[10][WT.im];
     }
     //            FTC->dataRefresh();
     if(cnt<3000)

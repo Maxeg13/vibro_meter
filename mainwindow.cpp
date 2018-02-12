@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    qstr=QString("COM4");
+    qstr=QString("COM8");
     LE->setText(qstr);
 
 
@@ -67,7 +67,8 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
-    vibro_plot->setAxisScale(QwtPlot::yLeft,-128,128);
+    int vibro_scale=400;
+    vibro_plot->setAxisScale(QwtPlot::yLeft,-vibro_scale,vibro_scale);
 
 
     int frame_width=3;
@@ -184,64 +185,49 @@ void MainWindow::paintEvent(QPaintEvent* e)
     //        mainCircle();
     if(SO_on)
     {
-        QPainter* painter=new QPainter(this);
-        //    painter->setRenderHint(QPainter::Antialiasing, 1);
-        QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        QColor QC=QColor(0,0,0);
-        float h=0;
-        painter->setPen(pen);
-        painter->scale(2,2);
-        //    painter->drawEllipse(QPoint(0,0),40,40);
-
-        for(int j=0;j<mas_n;j++)
-            for(int i=0;i<wn;i++)
-            {
-                h=(thresh_f(SO->WT.mas[i][j]*200,-255,255));
-                //            h=rand()%250;
-                if(h>0)
-                {
-//                    QC.setGreen(h);
-                    QC.setRed(h);
-
-                }
-                if(h<=0)
-                {
-                    h=-h;
-//                    QC.setGreen(h);
-                    QC.setBlue(h);
-                }
-
-                pen.setColor(QC);
-                painter->setPen(pen);
-                painter->drawPoint(QPointF(j,i*2));
-            }
-        //painter->scale()
-
-
         if(draw_on)
+        {
+            QPainter* painter=new QPainter(this);
+                painter->setRenderHint(QPainter::Antialiasing, 1);
+            QPen pen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+            QColor QC=QColor(0,0,0);
+            float h=0;
+            painter->setPen(pen);
+            painter->scale(2,2);
+            //    painter->drawEllipse(QPoint(0,0),40,40);
+
+            for(int j=0;j<mas_n;j++)
+                for(int i=0;i<wn;i++)
+                {
+                    h=(thresh_f(SO->WT.mas[i][(j)]*10000,-255,255));
+                    //            h=rand()%250;
+                    if(h>0)
+                    {
+                        //                    QC.setGreen(h);
+                        QC.setRed(h);
+
+                    }
+                    if(h<=0)
+                    {
+                        h=-h;
+                        //                    QC.setGreen(h);
+                        QC.setBlue(h);
+                    }
+
+                    pen.setColor(QC);
+                    painter->setPen(pen);
+                    painter->drawPoint(QPointF(j,i*2));
+                }
+            //painter->scale()
+
+
             vibroCurve->signalDrawing();
 
 
-        if(draw_on)
             fttCurve->set_Drawing(ft,0);
+            delete painter;
+        }
 
-
-
-        //    ftt_plot->setAxisScale(QwtPlot::yLeft,0,ySlider->value());
-
-        //    for(int j=0;j<lines_N;j++)
-        //        painter->drawLine(ML[j].x[0],ML[j].y[0],ML[j].x[1],ML[j].y[1]);
-
-        //    pen=QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
-
-        //    for(int j=0;j<nodes_N;j++)
-        //    {
-        //        pen.setColor(QColor(_node[j].clr[0],_node[j].clr[1],_node[j].clr[2]));
-        //        painter->setPen(pen);
-        //        painter->drawPoint(_node[j].x,_node[j].y);
-        //    }
-        delete painter;
     }
 }
 

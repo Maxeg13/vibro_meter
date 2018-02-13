@@ -76,7 +76,7 @@ void serial_obj::work()
     time+=dt;
     if((int8_t)readVar!=127)
     {
-        readVar=killRange(readVar,3);
+        readVar=killRange(readVar,9);
         MC->dataRefresh((int8_t)readVar);
         float xx=(int8_t)readVar;
         WT.extract(xx);

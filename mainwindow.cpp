@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    qstr=QString("COM8");
+    qstr=QString("COM5");
     LE->setText(qstr);
 
 
@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     drawingInit(vibro_plot,QString("vibro value"));
     vibroCurve=new myCurve(bufShowSize,vibro_plot,"perc out", Qt::black, Qt::black);
     vibro_plot->show();
-    int vibro_scale=400;
+    int vibro_scale=128;
     vibro_plot->setAxisScale(QwtPlot::yLeft,-vibro_scale,vibro_scale);
 
 
@@ -194,14 +194,14 @@ void MainWindow::paintEvent(QPaintEvent* e)
             QColor QC=QColor(0,0,0);
             float h=0;
             painter->setPen(pen);
-            painter->scale(4,4);
+            painter->scale(1.5,3);
             //    painter->drawEllipse(QPoint(0,0),40,40);
 
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
 //                    qDebug()<<SO->WT.mas[i][(j)];
-                    h=(thresh_f(SO->WT.mas[i][(j)]*100,-255,255));
+                    h=(thresh_f(SO->WT.mas[i][(j)]*80,-255,255));
                     //            h=rand()%250;
                     if(h>=0)
                     {

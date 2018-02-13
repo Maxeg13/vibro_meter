@@ -76,7 +76,7 @@ void serial_obj::work()
     time+=dt;
     if((int8_t)readVar!=127)
     {
-        readVar=killRange(readVar,4);
+        readVar=killRange(readVar,7);
         MC->dataRefresh((int8_t)readVar);
         float xx=(int8_t)readVar;
         WT.extract(xx);
@@ -84,7 +84,7 @@ void serial_obj::work()
         //        qDebug()<<WT.mas[10][WT.im];
     }
     //            FTC->dataRefresh();
-    if(cnt<3000)
+    if(cnt<100)
     {
         cnt++;
         ftt( (int8_t)readVar,ft,time);

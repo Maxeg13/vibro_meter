@@ -548,8 +548,8 @@ float Wavelet::extract(float& x1)
 
     for(i=0;i<wn;i++)
     {
-                mas[i][im]=stdy[i];
-//        mas[i][im]=0;
+        mas[i][im]=stdy[i];
+        //        mas[i][im]=0;
         if((stdy[i])>max)
         {
             max=(stdy[i]);
@@ -558,17 +558,17 @@ float Wavelet::extract(float& x1)
         }
 
 
-//        if((stdy[i])>7)
-//        {
-//            mas[i][im]=40;
-//        }
-//        else if((stdy[i])<-7)
-//        {
-//            mas[i][im]=-40;
-//        }
+        //        if((stdy[i])>7)
+        //        {
+        //            mas[i][im]=40;
+        //        }
+        //        else if((stdy[i])<-7)
+        //        {
+        //            mas[i][im]=-40;
+        //        }
     }
 
-    //    mas[max_i][im]=-40;
+    //        mas[max_i][im]=-40;
 
     im++;
     if(im==mas_n)
@@ -577,3 +577,56 @@ float Wavelet::extract(float& x1)
 }
 
 
+void getAmp(vector<fcomplex> a, vector<float>& b)
+{
+    b.resize(a.size());
+    for(int i=0;i<a.size();i++)
+        b[i]=fabs(a[i]);
+}
+
+float getT(vector<float>x)
+{
+    vector<float> T, T2;
+    float sign1, sign2;
+    int cnt;
+    for(int i=0;i<x.size()-1;i++)
+    {
+        sign2=x[i+1]-x[i];
+        if((sign1*sign2)>0)
+            cnt++;
+        else
+        {
+            if(cnt>0)
+                T.push_back(cnt);
+            cnt=0;
+        }
+        sign1=sign2;
+    }
+
+//    for(int i=0;i<T.size();i++)
+//        cout<<T[i]<<endl;
+//    cout<<T.size();
+        order(T,T2);
+        return(T2[(int)(T2.size()/2)]);
+    //    cout<<T[2]<<endl;
+    //    cout<<T[3]<<endl;
+}
+
+float order(vector<float>& x, vector<float>& y)
+{
+    int i;
+    int j;
+    float h;
+    y=x;
+    int s=x.size();
+    for(i=0;i<s;i++)
+    {
+        for(j=0;(j+i+1)<s;j++)
+            if(y[j]>y[j+1])
+            {
+                h=y[j];
+                y[j]=y[j+1];
+                y[j+1]=h;
+            }
+    }
+}

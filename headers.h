@@ -28,7 +28,7 @@
 #define mas_n 200
 #define NFT 700
 #define Fd 1030
-#define fmax Fd/2
+#define fmax Fd/3
 #define dt 1./Fd//2220
 typedef  std::complex<float> fcomplex;
 

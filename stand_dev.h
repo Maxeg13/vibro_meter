@@ -13,6 +13,10 @@ using namespace Eigen;
 float thresh_f(float, float, float);
 int killRange(int x, int thr );
 
+void getAmp(vector<fcomplex>, vector<float>&);
+float getT(vector<float>);
+float order(vector<float>& x, vector<float>& y);
+
 class lowPassFr
 {
 private:

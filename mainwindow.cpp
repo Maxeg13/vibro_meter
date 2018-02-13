@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    qstr=QString("COM8");
+    qstr=QString("COM7");
     LE->setText(qstr);
 
 
@@ -136,12 +136,19 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 {
     if(e->text()=="a")
     {
-        float acc=0;
-        for (int i=0;i<NFT;i++)
-            acc+=fabs(ft[i]*ft[i]);
+        //        float acc=0;
+        //        for (int i=0;i<NFT;i++)
+        //            acc+=fabs(ft[i]*ft[i]);
 
-        //        qDebug()<<acc;
-        qDebug()<<10*log(acc/520000);
+        //        //        qDebug()<<acc;
+        //        qDebug()<<10*log(acc/520000);
+        vector<float> a, T;
+        getAmp(ft,a);
+        qDebug()<<getT(a);
+
+
+        //        qDebug()<<a[10];
+        //        vector<float> ft1=ft;
     }
     if(e->text()==" ")
     {
@@ -178,7 +185,7 @@ void MainWindow::mainCircle()
 
 void MainWindow::paintEvent(QPaintEvent* e)
 {
-//        qDebug()<<SO->WT.max_i;
+    //        qDebug()<<SO->WT.max_i;
     //    static float t=1;
     //    t+=.06;
     //    if(t>10)t=10;
@@ -189,7 +196,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
         if(draw_on)
         {
             QPainter* painter=new QPainter(this);
-//                painter->setRenderHint(QPainter::Antialiasing, 1);
+            //                painter->setRenderHint(QPainter::Antialiasing, 1);
             QPen pen(Qt::black, 1);
             QColor QC=QColor(0,0,0);
             float h=0;
@@ -200,7 +207,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-//                    qDebug()<<SO->WT.mas[i][(j)];
+                    //                    qDebug()<<SO->WT.mas[i][(j)];
                     h=(thresh_f(SO->WT.mas[i][(j)]*80,-255,255));
                     //            h=rand()%250;
                     if(h>=0)
@@ -209,7 +216,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
                         QC.setRed(h);
                         QC.setBlue(0);
                         QC.setGreen(0);
-//qDebug()<<
+                        //qDebug()<<
                     }
                     if(h<0)
                     {

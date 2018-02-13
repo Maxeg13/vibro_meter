@@ -25,7 +25,7 @@
 
 #define ww 40
 #define wn 40
-#define mas_n 400
+#define mas_n 200
 #define NFT 700
 #define Fd 1030
 #define fmax Fd/2

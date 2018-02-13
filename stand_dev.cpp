@@ -529,29 +529,29 @@ float Wavelet::extract(float& x1)
             y[i]+=a[i][j]*x[i][j];
         }
 //        stdy[i]=FR[i](y[i]);
-        stdy[i]=(y[i]);
+        stdy[i]=fabs(y[i]);
 
     }
     max=0.0;
 
     for(i=0;i<wn;i++)
     {
-//        mas[i][im]=stdy[i];
-        mas[i][im]=0;
-//        if((stdy[i])>max)
-//        {
-//            max=(stdy[i]);
-//            cout<<max<<endl;
-//            max_i=i;
-//        }
-        if((stdy[i])>10)
+        mas[i][im]=stdy[i];
+//        mas[i][im]=0;
+        if((stdy[i])>max)
         {
-          mas[i][im]=40;
+            max=(stdy[i]);
+//            cout<<max<<endl;
+            max_i=i;
         }
+//        if((stdy[i])>10)
+//        {
+//          mas[i][im]=40;
+//        }
 
     }
 
-//    mas[max_i][im]=40;
+    mas[max_i][im]=-40;
 
     im++;
     if(im==mas_n)

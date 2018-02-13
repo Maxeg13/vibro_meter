@@ -477,7 +477,7 @@ Wavelet::Wavelet()
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,.2+j/5.);//2 is width//ten times at least
+            a[j][i]=scaleMoth(i,.2+j/4.);//2 is width//ten times at least//.2+j/4.
             mean+=a[j][i];
         }
         mean/=ww;
@@ -485,6 +485,17 @@ Wavelet::Wavelet()
         {
             a[j][i]-=mean;
         }
+
+        float energy=0;
+        for( i=0;i<ww;i++)
+        {
+            energy+=a[j][i]*a[j][i];
+        }
+        for( i=0;i<ww;i++)
+        {
+            a[j][i]/=sqrt(energy);
+        }
+
     }
 }
 
@@ -492,13 +503,14 @@ float badMorlet(float x,float a)
 {
     float x1=((x-wn/2.)/4.);//(x/20-1)
 
-    return((1./sqrt(3.))*exp(-x1*x1/0.66/0.66)*sin((x1)/a/0.66));
+    return((1./sqrt(3.))*exp(-x1*x1/0.66/0.66)*cos((x1)/a/0.66));
 }
 
 float Morlet(float x,float a)
 {
+    float a1=10;
     float x1=((x-wn/2.)/a);//(x/20-1)
-    return((1./sqrt(a))*exp(-x1*x1/1.3/1.3)*sin((x1)/1.3));
+    return((1./sqrt(1.))*exp(-x1*x1/1./1.)*sin((x1)/1.3));
 }
 
 float HAAR(float x, float a)
@@ -528,30 +540,35 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-//        stdy[i]=FR[i](y[i]);
-        stdy[i]=fabs(y[i]);
+        //        stdy[i]=100*FR[i](fabs(y[i]));
+        stdy[i]=(y[i]);
 
     }
     max=0.0;
 
     for(i=0;i<wn;i++)
     {
-        mas[i][im]=stdy[i];
+                mas[i][im]=stdy[i];
 //        mas[i][im]=0;
         if((stdy[i])>max)
         {
             max=(stdy[i]);
-//            cout<<max<<endl;
+            //            cout<<max<<endl;
             max_i=i;
         }
-//        if((stdy[i])>10)
-//        {
-//          mas[i][im]=40;
-//        }
 
+
+//        if((stdy[i])>7)
+//        {
+//            mas[i][im]=40;
+//        }
+//        else if((stdy[i])<-7)
+//        {
+//            mas[i][im]=-40;
+//        }
     }
 
-    mas[max_i][im]=-40;
+    //    mas[max_i][im]=-40;
 
     im++;
     if(im==mas_n)

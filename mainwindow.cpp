@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGridLayout* GL=new QGridLayout();
     //    QHBoxLayout* LO=new QHBoxLayout();
     QWidget *centralWidget1=new QWidget();
-    centralWidget1->setMinimumSize(700,250);
+    centralWidget1->setMinimumSize(1000,250);
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
@@ -215,9 +215,9 @@ void MainWindow::paintEvent(QPaintEvent* e)
                     {
                         h=-h;
                         //                    QC.setGreen(h);
-                        QC.setBlue(255);
-                        QC.setRed(255);
-                        QC.setGreen(255);
+                        QC.setBlue(h);
+                        QC.setRed(0);
+                        QC.setGreen(h);
                     }
 
                     pen.setColor(QC);

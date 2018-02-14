@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     stdafx.cpp \
     serialqobj.cpp \
     mainwindow.cpp \
-    stand_dev.cpp
+    stand_dev.cpp \
+    layer.cpp \
+    perceptron.cpp
 
 HEADERS  += \
     work.h \
@@ -34,7 +36,9 @@ HEADERS  += \
     serialqobj.h \
     mainwindow.h \
     ftt.h \
-    stand_dev.h
+    stand_dev.h \
+    layer.h \
+    perceptron.h
 
 DISTFILES += \
 

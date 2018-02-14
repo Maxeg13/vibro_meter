@@ -490,7 +490,7 @@ Wavelet::Wavelet()
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,.2+j/6.);//2 is width//ten times at least//.2+j/4.
+            a[j][i]=scaleMoth(i,.2+j/4.);//2 is width//ten times at least//.2+j/4.
             mean+=a[j][i];
         }
         mean/=ww;
@@ -553,7 +553,7 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-                stdy[i]=50*FR[i](killRangeF(y[i],9));
+                stdy[i]=30*FR[i](killRangeF(y[i],7));
 //        stdy[i]=(y[i]);
 
     }

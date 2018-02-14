@@ -12,6 +12,7 @@ using namespace Eigen;
 
 float thresh_f(float, float, float);
 int killRange(int x, int thr );
+float killRangeF(float x, float thr );
 
 void getAmp(vector<fcomplex>, vector<float>&);
 float getT(vector<float>);

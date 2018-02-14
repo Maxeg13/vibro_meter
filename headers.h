@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 #define ww 40
-#define wn 40
+#define wn 60
 #define mas_n 200
 #define NFT 700
 #define Fd 1030

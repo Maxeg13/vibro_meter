@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    qstr=QString("COM7");
+    qstr=QString("COM8");
     LE->setText(qstr);
 
 
@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-    GL->setRowMinimumHeight(0,wn*5);
+    GL->setRowMinimumHeight(0,wn*2.5);
     int jj=1;
     GL->addWidget(LE,1,1);
     jj=2;
@@ -201,14 +201,14 @@ void MainWindow::paintEvent(QPaintEvent* e)
             QColor QC=QColor(0,0,0);
             float h=0;
             painter->setPen(pen);
-            painter->scale(5,3.2);
+            painter->scale(4,2);
             //    painter->drawEllipse(QPoint(0,0),40,40);
 
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
                     //                    qDebug()<<SO->WT.mas[i][(j)];
-                    h=(thresh_f(SO->WT.mas[i][(j)]*80,-255,255));
+                    h=(thresh_f(SO->WT.mas[i][j]*80,-255,255));
                     //            h=rand()%250;
                     if(h>=0)
                     {

@@ -2,6 +2,10 @@
 #include<math.h>
 using namespace std;
 
+
+
+
+
 linearTr::linearTr(vector<float> x, vector<float> y)
 {
     outv.resize(2);
@@ -93,6 +97,15 @@ float upperVal(float x)
 }
 
 int killRange(int x, int thr )
+{
+    if (x > thr)
+        return (x - thr);
+    if (x < -thr)
+        return (x + thr);
+    return (0);
+}
+
+float killRangeF(float x, float thr )
 {
     if (x > thr)
         return (x - thr);
@@ -477,7 +490,7 @@ Wavelet::Wavelet()
         {
             y[j]=0;
             x[j][i]=0;
-            a[j][i]=scaleMoth(i,.2+j/4.);//2 is width//ten times at least//.2+j/4.
+            a[j][i]=scaleMoth(i,.2+j/6.);//2 is width//ten times at least//.2+j/4.
             mean+=a[j][i];
         }
         mean/=ww;
@@ -540,8 +553,8 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-        //        stdy[i]=100*FR[i](fabs(y[i]));
-        stdy[i]=(y[i]);
+                stdy[i]=50*FR[i](killRangeF(y[i],9));
+//        stdy[i]=(y[i]);
 
     }
     max=0.0;
@@ -549,7 +562,7 @@ float Wavelet::extract(float& x1)
     for(i=0;i<wn;i++)
     {
         mas[i][im]=stdy[i];
-        //        mas[i][im]=0;
+//                mas[i][im]=0;
         if((stdy[i])>max)
         {
             max=(stdy[i]);
@@ -558,14 +571,14 @@ float Wavelet::extract(float& x1)
         }
 
 
-        //        if((stdy[i])>7)
-        //        {
-        //            mas[i][im]=40;
-        //        }
-        //        else if((stdy[i])<-7)
-        //        {
-        //            mas[i][im]=-40;
-        //        }
+//                if((stdy[i])>7)
+//                {
+//                    mas[i][im]=stdy[i]-7;
+//                }
+//                else if((stdy[i])<-7)
+//                {
+//                    mas[i][im]=stdy[i]+7;
+//                }
     }
 
     //        mas[max_i][im]=-40;

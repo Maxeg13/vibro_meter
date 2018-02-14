@@ -21,6 +21,8 @@ Serial hSerial;
 QSlider *ySlider;
 QLineEdit* LE;
 QPushButton* sendB;
+QPushButton *btn_learn;
+
 
 QTimer *timer;
 QwtPlot *vibro_plot, *ftt_plot;
@@ -36,6 +38,8 @@ extern bool hear;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    btn_learn=new QPushButton[4]();
+
     ft.resize(NFT);
     sendB=new QPushButton("listening");
 
@@ -87,7 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
     jj=3;
     GL->addWidget(sendB,1,3);
     jj=4;
-    GL->addWidget(vibro_plot,2,1,1,3);
+    for(int i=0;i<4;i++)
+        GL->addWidget((btn_learn+i),2,(1+i));
+    GL->addWidget(vibro_plot,3,1,1,3);
     //    jj=4;
 
     //    GL->addWidget(LO,2,0,1,3);

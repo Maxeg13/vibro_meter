@@ -22,18 +22,18 @@ serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft
     constr.push_back(perc_out_dim);//outputs
     perc=new perceptron(constr);
 
-    perc_targ=new float*[perc_out_dim];
-    for(int i=0;i<perc_out_dim;i++)
+    perc_targ=new float*[perc_out_dim+1];
+    for(int i=0;i<perc_out_dim+1;i++)
     {
         perc_targ[i]=new float[perc_out_dim];
     }
 
 
-    for(int i=0;i<perc_out_dim;i++)
+    for(int i=-1;i<perc_out_dim;i++)
     {
         for(int j=0;j<perc_out_dim;j++)
         {
-            perc_targ[i][j]=(i==j)?1:0;
+            perc_targ[i+1][j]=(i==j)?1:0;
         }
     }
 
@@ -107,7 +107,7 @@ void serial_obj::work()
     time+=dt;
     if((int8_t)readVar!=127)
     {
-        readVar=killRange(readVar,7);
+        readVar=killRange(readVar,9);
         MC->dataRefresh((int8_t)readVar);
         float xx=(int8_t)readVar;
         WT.extract(xx);

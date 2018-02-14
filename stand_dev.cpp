@@ -553,7 +553,7 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-                stdy[i]=30*FR[i](killRangeF(y[i],7));
+                stdy[i]=20*FR[i](killRangeF(y[i],7));
 //        stdy[i]=(y[i]);
 
     }

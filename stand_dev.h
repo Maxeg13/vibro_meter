@@ -89,6 +89,7 @@ public:
     float x[wn][ww];
     float y[wn];
     float stdy[wn];
+    float out[wn];
     Wavelet();
     float extract(float&);
     float scaleMoth(float ,float);

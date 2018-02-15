@@ -488,6 +488,7 @@ Wavelet::Wavelet()
         float mean=0;
         for( i=0;i<ww;i++)
         {
+            out[i]=0;
             y[j]=0;
             x[j][i]=0;
             a[j][i]=scaleMoth(i,.2+j/4.);//2 is width//ten times at least//.2+j/4.
@@ -521,9 +522,8 @@ float badMorlet(float x,float a)
 
 float Morlet(float x,float a)
 {
-    float a1=10;
-    float x1=((x-wn/2.)/a);//(x/20-1)
-    return((1./sqrt(1.))*exp(-x1*x1/1./1.)*sin((x1)/1.3));
+    float x1=((x-ww/2.)/a);
+    return((1./sqrt(1.))*exp(-x1*x1)*sin((x1)/1.3));
 }
 
 float HAAR(float x, float a)
@@ -553,8 +553,8 @@ float Wavelet::extract(float& x1)
         {
             y[i]+=a[i][j]*x[i][j];
         }
-                stdy[i]=20*FR[i](killRangeF(y[i],7));
-//        stdy[i]=(y[i]);
+        out[i]=20*FR[i](killRangeF(y[i],7));
+        stdy[i]=(y[i]);
 
     }
     max=0.0;
@@ -562,7 +562,7 @@ float Wavelet::extract(float& x1)
     for(i=0;i<wn;i++)
     {
         mas[i][im]=stdy[i];
-//                mas[i][im]=0;
+        //                mas[i][im]=0;
         if((stdy[i])>max)
         {
             max=(stdy[i]);
@@ -571,14 +571,14 @@ float Wavelet::extract(float& x1)
         }
 
 
-//                if((stdy[i])>7)
-//                {
-//                    mas[i][im]=stdy[i]-7;
-//                }
-//                else if((stdy[i])<-7)
-//                {
-//                    mas[i][im]=stdy[i]+7;
-//                }
+        //                if((stdy[i])>7)
+        //                {
+        //                    mas[i][im]=stdy[i]-7;
+        //                }
+        //                else if((stdy[i])<-7)
+        //                {
+        //                    mas[i][im]=stdy[i]+7;
+        //                }
     }
 
     //        mas[max_i][im]=-40;
@@ -616,11 +616,11 @@ float getT(vector<float>x)
         sign1=sign2;
     }
 
-//    for(int i=0;i<T.size();i++)
-//        cout<<T[i]<<endl;
-//    cout<<T.size();
-        order(T,T2);
-        return(T2[(int)(T2.size()/2)]);
+    //    for(int i=0;i<T.size();i++)
+    //        cout<<T[i]<<endl;
+    //    cout<<T.size();
+    order(T,T2);
+    return(T2[(int)(T2.size()/2)]);
     //    cout<<T[2]<<endl;
     //    cout<<T[3]<<endl;
 }

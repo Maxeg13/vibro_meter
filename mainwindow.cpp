@@ -33,7 +33,7 @@ bool SO_on;
 extern bool hear;
 //work* WK;
 
-
+void drawPix(float hh,QColor& QC,bool b);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -50,10 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
     LE=new QLineEdit;
     qstr=QString("COM8");
     LE->setText(qstr);
-
-
-
-
 
 
     //    ser_on=1;
@@ -74,7 +70,6 @@ MainWindow::MainWindow(QWidget *parent) :
     int vibro_scale=128;
     vibro_plot->setAxisScale(QwtPlot::yLeft,-vibro_scale,vibro_scale);
 
-
     int frame_width=3;
     QGridLayout* GL=new QGridLayout();
     //    QHBoxLayout* LO=new QHBoxLayout();
@@ -83,16 +78,13 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-    GL->setRowMinimumHeight(0,wn*2.5);
-    int jj=1;
+    GL->setRowMinimumHeight(0,wn*2.5);   
     GL->addWidget(LE,1,1);
-    jj=2;
     GL->addWidget(ySlider,1,2);
-    jj=3;
     GL->addWidget(sendB,1,3);
-    jj=4;
     for(int i=0;i<4;i++)
         GL->addWidget((btn_learn+i),2,(1+i));
+
     GL->addWidget(vibro_plot,3,1,1,3);
     //    jj=4;
 
@@ -213,30 +205,20 @@ void MainWindow::paintEvent(QPaintEvent* e)
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-                    //                    qDebug()<<SO->WT.mas[i][(j)];
-                    h=(thresh_f(SO->WT.mas[i][j]*80,-255,255));
-                    //            h=rand()%250;
-                    if(h>=0)
-                    {
-                        //                    QC.setGreen(h);
-                        QC.setRed(h);
-                        QC.setBlue(0);
-                        QC.setGreen(0);
-                        //qDebug()<<
-                    }
-                    if(h<0)
-                    {
-                        h=-h;
-                        //                    QC.setGreen(h);
-                        QC.setBlue(h);
-                        QC.setRed(0);
-                        QC.setGreen(h);
-                    }
+                    drawPix(SO->WT.mas[i][j]*80,QC,1);
 
                     pen.setColor(QC);
                     painter->setPen(pen);
                     painter->drawPoint(QPointF(j,i));
                 }
+            for(int i=0;i<(wn-1);i++)
+            {
+                drawPix(SO->WT.out[i]*80,QC,1);
+
+                pen.setColor(QC);
+                painter->setPen(pen);
+                painter->drawRect(QRect(QPoint(mas_n,i),QPoint(mas_n+30,i)));
+            }
             //painter->scale()
 
 
@@ -313,5 +295,30 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
 
     //    d_plot->setMinimumSize(550,220);
     d_plot->resize(500,250);
+
+}
+
+void drawPix(float hh,QColor& QC,bool b)
+{
+    //                    qDebug()<<SO->WT.mas[i][(j)];
+    static float h;
+    h=(thresh_f(hh,-255,255));
+    //            h=rand()%250;
+    if(h>=0)
+    {
+        //                    QC.setGreen(h);
+        QC.setRed(h);
+        QC.setBlue(0);
+        QC.setGreen(0);
+        //qDebug()<<
+    }
+    else
+    {
+        h=-h;
+        //                    QC.setGreen(h);
+        QC.setBlue(h);
+        QC.setRed(0);
+        QC.setGreen(h);
+    }
 
 }

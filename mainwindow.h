@@ -10,6 +10,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    float** perc_targ;
+    int perc_in_dim;
+    int perc_out_dim;
+    perceptron* perc;
+    void refreshPerc();
+    void addLearnVector(int);
     void drawingInit(QwtPlot* d_plot, QString title);
     void keyPressEvent(QKeyEvent*);
     void mousePressEvent(QMouseEvent *);
@@ -22,6 +28,8 @@ private:
 protected:
      void paintEvent(QPaintEvent *e);
 public slots:
+     void buttonClicked(int);
+     void buttonReleased(int);
      void hearing();
      void drawing();
      void setCOM();

@@ -23,7 +23,10 @@ perceptron::perceptron(vector<int>& constr)
 
 }
 
-
+void perceptron::getMaxInd()
+{
+    
+}
 
 float perceptron::reset_w()
 {

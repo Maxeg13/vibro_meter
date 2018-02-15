@@ -485,10 +485,11 @@ Wavelet::Wavelet()
 
     for( j=0;j<wn;j++)
     {
+        out[j]=0;
         float mean=0;
         for( i=0;i<ww;i++)
         {
-            out[i]=0;
+
             y[j]=0;
             x[j][i]=0;
             a[j][i]=scaleMoth(i,.2+j/4.);//2 is width//ten times at least//.2+j/4.

@@ -10,10 +10,7 @@ class serial_obj : public QObject
 {
     Q_OBJECT
 public:
-    float** perc_targ;
-    perceptron* perc;
-    int perc_in_dim;
-    int perc_out_dim;
+
     Wavelet WT;
     int cnt;
     Serial hSerial;

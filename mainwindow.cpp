@@ -1,3 +1,5 @@
+//data_lrn[gest][i][channel] так удобнее добавлять в вектор
+
 #include "drawing.h"
 #include "MainWindow.h"
 #include <QPainter>
@@ -10,11 +12,12 @@
 #include <QMouseEvent>
 #include "QSlider"
 #include "QPushButton"
+#include <QSignalMapper>
 #include "stand_dev.h"
 
 vector<fcomplex> ft;
 vector<float> dataFFT;
-
+float* addition;
 bool draw_on=1;
 int bufShowSize=3000;
 Serial hSerial;
@@ -22,23 +25,56 @@ QSlider *ySlider;
 QLineEdit* LE;
 QPushButton* sendB;
 QPushButton *btn_learn;
-
-
+int gestures_N=4;
+int channels_N=10;
+int* channels;
 QTimer *timer;
 QwtPlot *vibro_plot, *ftt_plot;
 myCurve* vibroCurve, *fttCurve;
 QString qstr;
 QThread* thread;
+vector<vector<vector<float>>> data_lrn;
 bool SO_on;
 extern bool hear;
 //work* WK;
 
-void drawPix(float hh,QColor& QC,bool b);
+void drawFunc(float hh,QColor& QC,bool b);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    btn_learn=new QPushButton[4]();
+    addition=new float[channels_N];
+    for(int i=0; i<channels_N;i++)
+        addition[i]=0;
+
+    data_lrn.resize(gestures_N);
+//    for(int i=0;i<gestures_N;i++)
+//        data_lrn.resize(channels_N);
+
+    btn_learn=new QPushButton[gestures_N]();
+    btn_learn[0].setText(QString("one learn"));
+    btn_learn[1].setText(QString("two learn"));
+    btn_learn[2].setText(QString("three learn"));
+    btn_learn[3].setText(QString("four learn"));
+
+    QSignalMapper* signalMapper = new QSignalMapper(this);
+    connect(signalMapper, SIGNAL(mapped(int)),
+            this, SLOT(buttonClicked(int)));
+
+    QSignalMapper* signalMapper2 = new QSignalMapper(this);
+    connect(signalMapper2, SIGNAL(mapped(int)),
+            this, SLOT(buttonReleased(int)));
+
+    for(int i=0;i<gestures_N;i++)
+    {
+        connect((btn_learn+i), SIGNAL(pressed()),
+                signalMapper,         SLOT(map()));
+        signalMapper->setMapping((btn_learn+i), i);
+
+        connect((btn_learn+i), SIGNAL(released()),
+                signalMapper2,         SLOT(map()));
+        signalMapper2->setMapping((btn_learn+i), i);
+    }
 
     ft.resize(NFT);
     sendB=new QPushButton("listening");
@@ -70,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent) :
     int vibro_scale=128;
     vibro_plot->setAxisScale(QwtPlot::yLeft,-vibro_scale,vibro_scale);
 
+
+
     int frame_width=3;
     QGridLayout* GL=new QGridLayout();
     //    QHBoxLayout* LO=new QHBoxLayout();
@@ -78,14 +116,14 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWidget1->setLayout(GL);
     setCentralWidget(centralWidget1);
 
-    GL->setRowMinimumHeight(0,wn*2.5);   
-    GL->addWidget(LE,1,1);
-    GL->addWidget(ySlider,1,2);
-    GL->addWidget(sendB,1,3);
-    for(int i=0;i<4;i++)
+    GL->setRowMinimumHeight(0,wn*2.5);
+    GL->addWidget(LE,1,1,1,2);
+    GL->addWidget(ySlider,1,3,1,2);
+    //    GL->addWidget(sendB,1,3);
+    for(int i=0;i<gestures_N;i++)
         GL->addWidget((btn_learn+i),2,(1+i));
 
-    GL->addWidget(vibro_plot,3,1,1,3);
+    GL->addWidget(vibro_plot,3,1,1,4);
     //    jj=4;
 
     //    GL->addWidget(LO,2,0,1,3);
@@ -99,6 +137,38 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(LE,SIGNAL(returnPressed()),this,SLOT(setCOM()));
     connect(sendB,SIGNAL(clicked()),this, SLOT(hearing()));
+
+    channels=new int[channels_N];
+    for(int i=0;i<channels_N;i++)
+    {
+        channels[i]=(int)((wn/channels_N)*i);
+        //        qDebug()<<channels[i];
+    }
+
+    perc_in_dim=10;
+    perc_out_dim=4;
+    vector<int> constr;
+
+    constr.push_back(perc_in_dim);
+    constr.push_back(5);
+    constr.push_back(5);
+    constr.push_back(perc_out_dim);//outputs
+    perc=new perceptron(constr);
+
+    perc_targ=new float*[perc_out_dim+1];
+    for(int i=0;i<perc_out_dim+1;i++)
+    {
+        perc_targ[i]=new float[perc_out_dim];
+    }
+
+
+    for(int i=-1;i<perc_out_dim;i++)
+    {
+        for(int j=0;j<perc_out_dim;j++)
+        {
+            perc_targ[i+1][j]=(i==j)?1:0;
+        }
+    }
 }
 
 void MainWindow::setCOM()
@@ -143,10 +213,6 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
         vector<float> a, T;
         getAmp(ft,a);
         qDebug()<<getT(a);
-
-
-        //        qDebug()<<a[10];
-        //        vector<float> ft1=ft;
     }
     if(e->text()==" ")
     {
@@ -154,13 +220,21 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 
         for (int i=0;i<NFT;i++)
             ft[i]=0;
-
-        //        for(int i=0;i<bufShowSize;i++)
-        //            ftt( vibroCurve->data[(i+vibroCurve->ind_c)&bufShowSize],ft,i*dt);
     }
     if(e->text()=="d")
     {
         draw_on=!draw_on;
+    }
+    if(e->text()=="l")
+    {
+//        qDebug()<<"\n";
+//        for(int i=0;i<channels_N;i++)
+//        qDebug()<<data_lrn[0].back()[i];
+        int i;
+        int j;
+        for(i=0;i<10000;i++)
+            for(j=0;j<gestures_N;j++)
+        perc->learn1(data_lrn[j][rand()%data_lrn[j].size()],perc_targ[j+1]);
     }
 }
 
@@ -189,6 +263,21 @@ void MainWindow::paintEvent(QPaintEvent* e)
     //    if(t>10)t=10;
     //    for (int i=0;i<t;i++)
     //        mainCircle();
+    static int add_cnt=0;
+    add_cnt++;
+    if(add_cnt==3)
+    {
+        for(int i=0;i<perc_out_dim;i++)
+        perc->refresh()
+        add_cnt=0;
+        for(int i=0;i<channels_N;i++)
+            if(addition[i])
+            {
+//                qDebug()<<"HELLO";
+                addLearnVector(i);
+            }
+    }
+
     if(SO_on)
     {
         if(draw_on)
@@ -205,7 +294,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
             for(int j=0;j<mas_n;j++)
                 for(int i=0;i<wn;i++)
                 {
-                    drawPix(SO->WT.mas[i][j]*80,QC,1);
+                    drawFunc(SO->WT.mas[i][j]*80,QC,1);
 
                     pen.setColor(QC);
                     painter->setPen(pen);
@@ -213,11 +302,11 @@ void MainWindow::paintEvent(QPaintEvent* e)
                 }
             for(int i=0;i<(wn-1);i++)
             {
-                drawPix(SO->WT.out[i]*80,QC,1);
+                drawFunc(SO->WT.out[i]*80,QC,1);
 
                 pen.setColor(QC);
                 painter->setPen(pen);
-                painter->drawRect(QRect(QPoint(mas_n,i),QPoint(mas_n+30,i)));
+                painter->drawRect(QRect(QPoint(mas_n-1,i),QPoint(mas_n+30,i)));
             }
             //painter->scale()
 
@@ -230,6 +319,18 @@ void MainWindow::paintEvent(QPaintEvent* e)
         }
 
     }
+}
+
+void MainWindow::buttonClicked(int i)
+{
+    data_lrn[i].resize(0);
+    addition[i]=1;
+}
+
+void MainWindow::buttonReleased(int i)
+{
+    addition[i]=0;
+    qDebug()<<data_lrn[i].size();
 }
 
 MainWindow::~MainWindow()
@@ -298,7 +399,8 @@ void MainWindow::drawingInit(QwtPlot* d_plot, QString title)
 
 }
 
-void drawPix(float hh,QColor& QC,bool b)
+
+void drawFunc(float hh,QColor& QC,bool b)
 {
     //                    qDebug()<<SO->WT.mas[i][(j)];
     static float h;
@@ -321,4 +423,23 @@ void drawPix(float hh,QColor& QC,bool b)
         QC.setGreen(h);
     }
 
+}
+
+
+void MainWindow::addLearnVector(int gest)
+{
+    vector<float> x;
+    for(int i=0;i<channels_N;i++)
+        x.push_back(SO->WT.out[channels[i]]);
+
+    data_lrn[gest].push_back(x);
+}
+
+void MainWindow::refreshPerc()
+{
+    vector<float> x;
+    for(int i=0;i<channels_N;i++)
+        x.push_back(SO->WT.out[channels[i]]);
+
+    perc->refresh(x);
 }

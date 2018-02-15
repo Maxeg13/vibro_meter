@@ -12,30 +12,7 @@ serial_obj::serial_obj(QString qstr, myCurve* _MC, vector<fcomplex>& _ft):ft(_ft
 {
 
 
-    perc_in_dim=10;
-    perc_out_dim=4;
-    vector<int> constr;
 
-    constr.push_back(perc_in_dim);
-    constr.push_back(5);
-    constr.push_back(5);
-    constr.push_back(perc_out_dim);//outputs
-    perc=new perceptron(constr);
-
-    perc_targ=new float*[perc_out_dim+1];
-    for(int i=0;i<perc_out_dim+1;i++)
-    {
-        perc_targ[i]=new float[perc_out_dim];
-    }
-
-
-    for(int i=-1;i<perc_out_dim;i++)
-    {
-        for(int j=0;j<perc_out_dim;j++)
-        {
-            perc_targ[i+1][j]=(i==j)?1:0;
-        }
-    }
 
 //    for(int i=0;i<perc_out_dim;i++)
 //        cout<<perc_targ[1][i]<<endl;

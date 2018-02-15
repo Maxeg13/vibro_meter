@@ -25,8 +25,8 @@ QSlider *ySlider;
 QLineEdit* LE;
 QPushButton* sendB;
 QPushButton *btn_learn;
-int gestures_N=4;
-int channels_N=10;
+int gestures_N=3;
+int channels_N=20;
 int* channels;
 QTimer *timer;
 QwtPlot *vibro_plot, *ftt_plot;
@@ -43,19 +43,22 @@ void drawFunc(float hh,QColor& QC,bool b);
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    addition=new float[channels_N];
-    for(int i=0; i<channels_N;i++)
-        addition[i]=0;
+    addition=new float[gestures_N+1];
+    for(int i=0; i<gestures_N+1;i++)
+        addition[i+1]=0;
 
-    data_lrn.resize(gestures_N);
+    data_lrn.resize(gestures_N+1);
+    vector<float> h;
+    h.resize(channels_N);
+    data_lrn[0].push_back(h);
 //    for(int i=0;i<gestures_N;i++)
 //        data_lrn.resize(channels_N);
 
     btn_learn=new QPushButton[gestures_N]();
-    btn_learn[0].setText(QString("one learn"));
-    btn_learn[1].setText(QString("two learn"));
-    btn_learn[2].setText(QString("three learn"));
-    btn_learn[3].setText(QString("four learn"));
+
+//    btn_learn[1].setText(QString("two learn"));
+//    btn_learn[2].setText(QString("three learn"));
+//    btn_learn[3].setText(QString("four learn"));
 
     QSignalMapper* signalMapper = new QSignalMapper(this);
     connect(signalMapper, SIGNAL(mapped(int)),
@@ -67,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(int i=0;i<gestures_N;i++)
     {
+        btn_learn[i].setText(QString::number(i)+QString(" learn"));
+
         connect((btn_learn+i), SIGNAL(pressed()),
                 signalMapper,         SLOT(map()));
         signalMapper->setMapping((btn_learn+i), i);
@@ -145,8 +150,8 @@ MainWindow::MainWindow(QWidget *parent) :
         //        qDebug()<<channels[i];
     }
 
-    perc_in_dim=10;
-    perc_out_dim=4;
+    perc_in_dim=channels_N;
+    perc_out_dim=gestures_N+1;
     vector<int> constr;
 
     constr.push_back(perc_in_dim);
@@ -155,18 +160,18 @@ MainWindow::MainWindow(QWidget *parent) :
     constr.push_back(perc_out_dim);//outputs
     perc=new perceptron(constr);
 
-    perc_targ=new float*[perc_out_dim+1];
-    for(int i=0;i<perc_out_dim+1;i++)
+    perc_targ=new float*[perc_out_dim];
+    for(int i=0;i<perc_out_dim;i++)
     {
         perc_targ[i]=new float[perc_out_dim];
     }
 
 
-    for(int i=-1;i<perc_out_dim;i++)
+    for(int i=0;i<perc_out_dim;i++)
     {
         for(int j=0;j<perc_out_dim;j++)
         {
-            perc_targ[i+1][j]=(i==j)?1:0;
+            perc_targ[i][j]=(i==j)?1:0;
         }
     }
 }
@@ -225,16 +230,27 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
     {
         draw_on=!draw_on;
     }
+    if(e->text()=="r")
+    {
+        data_lrn.resize(0);
+        data_lrn.resize(gestures_N+1);
+        vector<float> h;
+        h.resize(channels_N);
+        data_lrn[0].push_back(h);
+        perc->reset_w();
+    }
     if(e->text()=="l")
     {
 //        qDebug()<<"\n";
 //        for(int i=0;i<channels_N;i++)
 //        qDebug()<<data_lrn[0].back()[i];
+
         int i;
         int j;
         for(i=0;i<10000;i++)
-            for(j=0;j<gestures_N;j++)
-        perc->learn1(data_lrn[j][rand()%data_lrn[j].size()],perc_targ[j+1]);
+            for(j=0;j<(gestures_N+1);j++)
+                if(data_lrn[j].size())
+        perc->learn1(data_lrn[j][rand()%data_lrn[j].size()],perc_targ[j]);
     }
 }
 
@@ -267,14 +283,15 @@ void MainWindow::paintEvent(QPaintEvent* e)
     add_cnt++;
     if(add_cnt==3)
     {
-        for(int i=0;i<perc_out_dim;i++)
-        perc->refresh()
+        refreshPerc();
+        qDebug()<<perc->getMaxInd();
+
         add_cnt=0;
-        for(int i=0;i<channels_N;i++)
-            if(addition[i])
+        for(int i=0;i<gestures_N;i++)
+            if(addition[i+1])
             {
 //                qDebug()<<"HELLO";
-                addLearnVector(i);
+                addLearnVector(i+1);
             }
     }
 
@@ -323,14 +340,14 @@ void MainWindow::paintEvent(QPaintEvent* e)
 
 void MainWindow::buttonClicked(int i)
 {
-    data_lrn[i].resize(0);
-    addition[i]=1;
+    data_lrn[i+1].resize(0);
+    addition[i+1]=1;
 }
 
 void MainWindow::buttonReleased(int i)
 {
-    addition[i]=0;
-    qDebug()<<data_lrn[i].size();
+    addition[i+1]=0;
+    qDebug()<<data_lrn[i+1].size();
 }
 
 MainWindow::~MainWindow()
@@ -430,7 +447,7 @@ void MainWindow::addLearnVector(int gest)
 {
     vector<float> x;
     for(int i=0;i<channels_N;i++)
-        x.push_back(SO->WT.out[channels[i]]);
+        x.push_back(SO->WT.out[channels[i]]/2.);
 
     data_lrn[gest].push_back(x);
 }
@@ -438,8 +455,8 @@ void MainWindow::addLearnVector(int gest)
 void MainWindow::refreshPerc()
 {
     vector<float> x;
-    for(int i=0;i<channels_N;i++)
-        x.push_back(SO->WT.out[channels[i]]);
+    for(int i=1;i<(channels_N);i++)
+        x.push_back(SO->WT.out[channels[i]]/2.);
 
     perc->refresh(x);
 }

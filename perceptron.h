@@ -17,7 +17,7 @@ public:
     layer **lr;
     layer *lrh;
     perceptron(vector<int>& constr);
-    void getMaxInd();
+    int getMaxInd();
     float reset_w();
     float** refresh(float* x);
     float** refresh(vector<float>& x);

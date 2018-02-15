@@ -14,7 +14,7 @@ perceptron::perceptron(vector<int>& constr)
         lr[i]=new layer(constr[i],1,lrh);
         lrh=lr[i];
     }
-    lr[N-1]=new layer(constr[N-1],2,lrh);
+    lr[N-1]=new layer(constr[N-1],1,lrh);
 
     out=new float*[constr[N-1]];
     for( i=0;i<constr[N-1];i++)
@@ -23,7 +23,20 @@ perceptron::perceptron(vector<int>& constr)
 
 }
 
-
+int perceptron::getMaxInd()
+{
+    float max=-1000;
+    int ind=0;
+    for(i=0;i<lr[N-1]->size;i++)
+    {
+        if(lr[N-1]->n[i].state>max)
+        {
+            ind=i;
+            max=lr[N-1]->n[i].state;
+        }
+    }
+    return  ind;
+}
 
 float perceptron::reset_w()
 {

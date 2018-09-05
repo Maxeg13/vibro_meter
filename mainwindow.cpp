@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ySlider->setRange(13, 30);
 
     LE=new QLineEdit;
-    QString qstr=QString("COM5");
+    QString qstr=QString("COM8");
     LE->setText(qstr);
 
     int frame_width=4;

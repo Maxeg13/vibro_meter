@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 #define NFT 700
-#define Fd 1030
+#define Fd 2575 //1030
 #define fmax Fd/2
 #define dt 1./Fd//2220
 typedef  std::complex<float> fcomplex;

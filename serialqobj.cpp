@@ -48,7 +48,7 @@ void serial_obj::doWork()
             time+=dt;
             MC->dataRefresh((int8_t)readVar);
 //            FTC->dataRefresh();
-            if(cnt<3000)
+//            if(cnt<3000)
             {
                 cnt++;
             ftt( (int8_t)readVar,ft,time);
